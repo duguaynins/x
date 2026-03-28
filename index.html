@@ -347,7 +347,7 @@
                     
                     // 關鍵功能：處理即時打字預覽
                     if (msg.type === 'typing') {
-                        remoteTyping.innerText = msg.data ? `LIVE> ${msg.data}` : "";
+                        remoteTyping.innerText = msg.data ? `LIVE> ${msg.data}` : "LIVE>";
                     } 
                     else if (msg.type === 'chat') {
                         remoteTyping.innerText = "LIVE>"; // 送出後清空預覽
