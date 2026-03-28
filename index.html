@@ -132,10 +132,12 @@
             return result;
         }
         
+        const params = new URLSearchParams(window.location.search);
+
         // --- 設定區 ---
         const apikey = 'ijFBLQ.BEpg4g:yqcH3sGhgGO77S5mV4pAKFiaSYXo4DoqXSZfvXp2c6A'; // 請替換成你的 API Key
-        const userid = randomAlphaString(128);
-        const roomid = "test";///randomAlphaString(128);
+        const userid = params.get("userid") || randomAlphaString(128);
+        const roomid = params.get("roomid") || randomAlphaString(128);
 
         // 1. 初始化 Ably
         const ably = new Ably.Realtime({
