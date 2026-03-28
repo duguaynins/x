@@ -277,20 +277,22 @@
                 ///div.innerText = content;  ///📄📑
                 div.innerHTML = `
                 <div class="text-card" id="text-${randomID}">
-                    <span id="${randomID}_T" style="" translate="no">${msgTime}</span><br>
-                    <span>📑${content}</span>
+                    <!--span id="${randomID}_T" style="" translate="no">${msgTime}</span><br!-->
+                    
                     <span style="">
                         <label id="AI_oa" translate="no" style="color:black;"> <a translate="no" style="text-decoration: none;" target="_blank" rel="noopener noreferrer" href="${openai}">🧠AI:O</a> </label>
                         <label id="AI_gg" translate="no" style="color:black;"> <a translate="no" style="text-decoration: none;" target="_blank" rel="noopener noreferrer" href="${google}">♊AI:G</a> </label>
                         <label id="AI_pp" translate="no" style="color:black;"> <a translate="no" style="text-decoration: none;" target="_blank" rel="noopener noreferrer" href="${perple}">🕸️AI:P</a> </label>
                         <!--label id="OL_tg" translate="no" onclick="selectReplyid('text-${randomID}')">⬅️</label!-->
                     </span>
+                    <span>📑${content}</span>
 
                 </div>`;
             } else {
                 div.innerHTML = `
                 <div class="file-card" id="file-${fileId}">
-                    <span id="${randomID}_T" style="" translate="no">${msgTime}</span><br>
+                    <!--span id="${randomID}_T" style="" translate="no">${msgTime}</span><br!-->
+                    
                     <a class="download-btn">📑${content}</a>
                     <div class="progress-container">
                         <div class="progress-bar"></div>
