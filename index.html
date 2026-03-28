@@ -246,6 +246,42 @@
             return div;
         }
 
+        function markDisconnected(reason = "") {
+                connStatus.innerText = "● End";
+                connStatus.style.color = "gray";
+                document.getElementById("fileBtn").disabled = true;
+                document.getElementById("textInput").disabled = true;
+                document.getElementById("sendBtn").disabled = true;
+        }
+
+        function setupPeerConnection(pc) {
+            pc.onconnectionstatechange = () => {
+                console.log("PC connectionState:", pc.connectionState);
+
+                if (
+                    pc.connectionState === "disconnected" ||
+                    pc.connectionState === "failed" ||
+                    pc.connectionState === "closed"
+                ) {
+                    markDisconnected("connectionState " + pc.connectionState);
+                }
+            };
+
+            pc.oniceconnectionstatechange = () => {
+                console.log("PC iceConnectionState:", pc.iceConnectionState);
+
+                if (
+                    pc.iceConnectionState === "disconnected" ||
+                    pc.iceConnectionState === "failed" ||
+                    pc.iceConnectionState === "closed"
+                ) {
+                    markDisconnected("iceConnectionState " + pc.iceConnectionState);
+                }
+            };
+        }
+        
+        setupPeerConnection(pc);
+
         function setupDataChannel(channel) {
             dataChannel = channel;
             dataChannel.binaryType = 'arraybuffer';
