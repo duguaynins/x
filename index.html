@@ -11,7 +11,7 @@
     <link rel="canonical" href="https://copyright.nins.cc/">
     <title>nins/xLIFE</title>
     <style>
-        :root { --bg: #f0f2f5; --primary: #0084ff; --gray: #e4e6eb; }
+        :root { --bg: #f0f2f5; --primary: #0084ff; --gray: #e4e6eb; --yellow: #f5e025; }
         body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; height: 100vh; margin: 0; }
         
         /* 信令控制區 */
@@ -24,7 +24,7 @@
         /* 訊息氣泡 */
         .msg { max-width: 70%; padding: 10px 15px; border-radius: 18px; word-break: break-all; font-size: 14px; line-height: 1.4; }
         .msg.me { align-self: flex-end; background: var(--primary); color: white; }
-        .msg.other { align-self: flex-start; background: var(--gray); color: black; }
+        .msg.other { align-self: flex-start; background: var(--yellow); color: black; }
         
         /* 即時輸入預覽 */
         #remote-typing { 
@@ -276,9 +276,19 @@
         function markDisconnected(reason = "") {
                 connStatus.innerText = "● End";
                 connStatus.style.color = "gray";
+                document.getElementById("content").style.background = "#777777";
                 document.getElementById("fileBtn").disabled = true;
                 document.getElementById("textInput").disabled = true;
                 document.getElementById("sendBtn").disabled = true;
+        }
+
+        function markConnected(reason = "") {
+                connStatus.innerText = "● Start";
+                connStatus.style.color = "green";
+                document.getElementById("content").style.background = "#cdcdcd";
+                document.getElementById("fileBtn").disabled = false;
+                document.getElementById("textInput").disabled = false;
+                document.getElementById("sendBtn").disabled = false;
         }
 
         function setupPeerConnection(pc) {
@@ -317,18 +327,18 @@
             dataChannel.onclose = () => {  
                 connStatus.innerText = "● Disconnected";
                 connStatus.style.color = "red";
-                document.getElementById("textInput").disabled = true;
+                markDisconnected();
             };
             dataChannel.onerror = () => {  
                 connStatus.innerText = "● Error";
                 connStatus.style.color = "red";
-                document.getElementById("textInput").disabled = true;
+                markDisconnected();
             };
 
             dataChannel.onopen = () => {
                 connStatus.innerText = "● Connected";
                 connStatus.style.color = "green";
-                document.getElementById("textInput").disabled = false;
+                markConnected();
             };
 
             dataChannel.onmessage = (event) => {
@@ -374,59 +384,12 @@
             };
         }
 
+        
         /*
         document.addEventListener('click', async function (e) {
             await setupOfferSDP();
         }, { once: true });  */
 
-        async function setupLinkHandler(params) {  }
-        function setupConnectionWatch(pc, dataChannel) {
-            pc.onconnectionstatechange = () => {
-                console.log("connectionState:", pc.connectionState);
-
-                if (pc.connectionState === "connected") {
-                    console.log("✅ WebRTC 連線成功");
-                }
-
-                if (pc.connectionState === "disconnected") {
-                    console.log("⚠️ WebRTC 暫時斷線");
-                }
-
-                if (pc.connectionState === "failed") {
-                    console.log("❌ WebRTC 連線失敗");
-                }
-
-                if (pc.connectionState === "closed") {
-                    console.log("🔒 WebRTC 已關閉");
-                }
-            };
-
-            pc.oniceconnectionstatechange = () => {
-                console.log("iceConnectionState:", pc.iceConnectionState);
-
-                if (pc.iceConnectionState === "disconnected") {
-                    console.log("⚠️ ICE 斷線");
-                }
-
-                if (pc.iceConnectionState === "failed") {
-                    console.log("❌ ICE 失敗");
-                }
-            };
-
-            if (dataChannel) {
-                dataChannel.onopen = () => {
-                    console.log("✅ DataChannel 已開啟");
-                };
-
-                dataChannel.onclose = () => {
-                    console.log("❌ DataChannel 已關閉");
-                };
-
-                dataChannel.onerror = (err) => {
-                    console.log("⚠️ DataChannel 錯誤:", err);
-                };
-            }
-        }
 
         // WebRTC 信令流程 (Offer/Answer)
         async function setupOfferSDP(inputs=null) {
