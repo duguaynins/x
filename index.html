@@ -10,6 +10,39 @@
     <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!">
     <link rel="canonical" href="https://copyright.nins.cc/">
     <title>nins/xLIFE</title>
+
+
+    <script>
+        
+    function generateRandomIntNumber(length) {
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            // 生成 0-9 的隨機數字
+            result += Math.floor(Math.random() * 10);
+        }
+        return result;
+    }
+
+    function generateRandomAlphaString(length) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        let result = "";
+        for (let i = 0; i < length; i++) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return result;
+    }
+    
+    const url = new URL(window.location.href);
+    /*
+    if (!url.searchParams.has("x")) {
+        url.searchParams.set("x", Date.now()); // 加入参数
+        window.location.href = url.toString(); // 重新载入
+    }  */
+    if (!url.searchParams.has("roomid")) {
+        url.searchParams.set("roomid", generateRandomIntNumber(9)); // 加入参数
+        window.location.href = url.toString(); // 重新载入
+    }  
+    </script>
     <style>
         :root { --bg: #f0f2f5; --primary: #0084ff; --gray: #e4e6eb; --yellow: #f5e025; --green: #3beb3e; --blue: #d5ebf7; }
         body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; height: 100vh; margin: 0; }
@@ -132,25 +165,6 @@
         document.getElementById("fileBtn").disabled = true;
         document.getElementById("textInput").disabled = true;
         document.getElementById("sendBtn").disabled = true;
-
-
-        function generateRandomIntNumber(length) {
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                // 生成 0-9 的隨機數字
-                result += Math.floor(Math.random() * 10);
-            }
-            return result;
-        }
-
-        function generateRandomAlphaString(length) {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            let result = "";
-            for (let i = 0; i < length; i++) {
-                result += chars[Math.floor(Math.random() * chars.length)];
-            }
-            return result;
-        }
 
         // --- 設定區 ---
         const params = new URLSearchParams(window.location.search);
