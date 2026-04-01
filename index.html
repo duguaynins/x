@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,7 +169,7 @@
 
         // --- 設定區 ---
         const params = new URLSearchParams(window.location.search);
-        const apikey = 'ijFBLQ.BEpg4g:yqcH3sGhgGO77S5mV4pAKFiaSYXo4DoqXSZfvXp2c6A'; // 請替換成你的 API Key
+        ///const apikey = 'ijFBLQ.BEpg4g:yqcH3sGhgGO77S5mV4pAKFiaSYXo4DoqXSZfvXp2c6A'; // 請替換成你的 API Key
         const userid = params.get("userid") || generateRandomAlphaString(128);
         const roomid = params.get("roomid") || generateRandomIntNumber(9);
 
@@ -181,11 +182,13 @@
             correctLevel : QRCode.CorrectLevel.H
         });
 
-        // 1. 初始化 Ably
+        // 1. 初始化 Ably  ///:realtime/ably
+        const ably = new Ably.Realtime({ authUrl: 'https://duguaynins-ably.hf.space/auth', authMethod: 'POST', authHeaders: { 'clientId': userid, 'Beta': `TOEKN ${0}`, 'Authorization': `Bearer ${0}` } });
+        /* 
         const ably = new Ably.Realtime({
             key: apikey,
             clientId: userid
-        });
+        });  */
 
         // 2. 取得一個頻道 (Channel)
         const channel = ably.channels.get( roomid );
@@ -495,7 +498,7 @@
                 }));
             }
         });
-
+        
         function sendText() {
             const val = textInput.value;
             if (!val || !dataChannel) return;
