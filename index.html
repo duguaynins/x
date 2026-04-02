@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -472,7 +473,9 @@
                     await channel.presence.update({ SDP: localDescription });
 
                     ///channel.detach(); // 或 close / leave
-                    ably.close();
+                    setTimeout(() => {
+                        ably.close();
+                    }, 2000); // Waits 2 seconds
                 }, 500);  ///alert
             }
         }
