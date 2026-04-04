@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOS PNG Converter</title>
+  <style>
+    body {
+      background: #000;
+      color: #00ff00;
+      font-family: "Courier New", Courier, monospace;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .terminal {
+      max-width: 960px;
+      margin: auto;
+      border: 2px solid #00ff00;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ff00;
+      background: #000;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 24px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #00ff00;
+      padding-bottom: 10px;
+    }
+
+    .line {
+      margin: 12px 0;
+    }
+
+    .btn {
+      background: #000;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .text-input {
+      background: #000;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 16px;
+      width: 140px;
+      outline: none;
+    }
+
+    .text-input::placeholder {
+      color: #00aa00;
+    }
+
+    .preview, .downloads {
+      margin-top: 20px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .preview-item, .download-item {
+      border: 1px solid #00ff00;
+      padding: 10px;
+      text-align: center;
+      background: #050505;
+    }
+
+    .preview img {
+      display: block;
+      background: #111;
+      margin: 0 auto 8px;
+      border: 1px solid #00ff00;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    a {
+      color: #00ff00;
+      text-decoration: none;
+      border: 1px solid #00ff00;
+      padding: 8px 12px;
+      display: inline-block;
+    }
+
+    a:hover {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #00ff00;
+      min-height: 24px;
+    }
+
+    .blink::after {
+      content: "_";
+      animation: blink 1s step-start infinite;
+    }
+
+    .filename {
+      margin-top: 10px;
+      color: #00ff00;
+    }
+
+    .inline-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <h1>PNG IMAGE CONVERTER v2.0</h1>
+
+    <div class="line">C:\> SELECT IMAGE FILE</div>
+    <button class="btn" id="selectBtn">[ SELECT FILE ]</button>
+    <input type="file" id="upload" class="hidden-input" accept="image/*" />
+    <div class="filename" id="filename">NO FILE SELECTED</div>
+
+    <div class="line">C:\> ENTER OUTPUT SIZE (PX)</div>
+    <div class="inline-group">
+      <input type="number" id="sizeInput" class="text-input" placeholder="e.g. 512" value="512" min="1" />
+      <button class="btn" id="convertBtn">[ RUN CONVERSION ]</button>
+    </div>
+
+    <div class="status blink" id="status">SYSTEM READY</div>
+
+    <div class="line">C:\> PREVIEW OUTPUT</div>
+    <div class="preview" id="preview"></div>
+
+    <div class="line">C:\> DOWNLOAD FILE</div>
+    <div class="downloads" id="downloads"></div>
+  </div>
+
+  <script>
+    const upload = document.getElementById("upload");
+    const selectBtn = document.getElementById("selectBtn");
+    const convertBtn = document.getElementById("convertBtn");
+    const sizeInput = document.getElementById("sizeInput");
+    const preview = document.getElementById("preview");
+    const downloads = document.getElementById("downloads");
+    const status = document.getElementById("status");
+    const filename = document.getElementById("filename");
+
+    let imageFile = null;
+
+    selectBtn.addEventListener("click", () => {
+      upload.click();
+    });
+
+    upload.addEventListener("change", (e) => {
+      imageFile = e.target.files[0];
+      preview.innerHTML = "";
+      downloads.innerHTML = "";
+
+      if (imageFile) {
+        filename.textContent = `FILE: ${imageFile.name}`;
+        status.textContent = `FILE LOADED: ${imageFile.name}`;
+      } else {
+        filename.textContent = "NO FILE SELECTED";
+        status.textContent = "SYSTEM READY";
+      }
+    });
+
+    convertBtn.addEventListener("click", () => {
+      if (!imageFile) {
+        status.textContent = "ERROR: NO IMAGE FILE SELECTED";
+        return;
+      }
+
+      const size = parseInt(sizeInput.value, 10);
+
+      if (!size || size <= 0) {
+        status.textContent = "ERROR: INVALID OUTPUT SIZE";
+        return;
+      }
+
+      status.textContent = `PROCESSING ${size}x${size} PNG...`;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+
+        img.onload = function() {
+          preview.innerHTML = "";
+          downloads.innerHTML = "";
+
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          canvas.width = size;
+          canvas.height = size;
+
+          ctx.clearRect(0, 0, size, size);
+
+          // Crop to square while keeping aspect ratio
+          const imgRatio = img.width / img.height;
+          const canvasRatio = 1;
+
+          let sx, sy, sWidth, sHeight;
+
+          if (imgRatio > canvasRatio) {
+            sHeight = img.height;
+            sWidth = img.height;
+            sx = (img.width - sWidth) / 2;
+            sy = 0;
+          } else {
+            sWidth = img.width;
+            sHeight = img.width;
+            sx = 0;
+            sy = (img.height - sHeight) / 2;
+          }
+
+          ctx.drawImage(
+            img,
+            sx, sy, sWidth, sHeight,
+            0, 0, size, size
+          );
+
+          const pngUrl = canvas.toDataURL("image/png");
+
+          // Preview
+          const previewBox = document.createElement("div");
+          previewBox.className = "preview-item";
+
+          const previewImg = document.createElement("img");
+          previewImg.src = pngUrl;
+          previewImg.alt = `${size}x${size}`;
+
+          const previewDisplaySize = Math.min(size, 200);
+          previewImg.style.width = `${previewDisplaySize}px`;
+          previewImg.style.height = `${previewDisplaySize}px`;
+
+          const previewText = document.createElement("div");
+          previewText.textContent = `${size}x${size}.PNG`;
+
+          previewBox.appendChild(previewImg);
+          previewBox.appendChild(previewText);
+          preview.appendChild(previewBox);
+
+          // Download
+          const downloadBox = document.createElement("div");
+          downloadBox.className = "download-item";
+
+          const link = document.createElement("a");
+          link.href = pngUrl;
+          link.download = `${size}x${size}.png`;
+          link.textContent = `DOWNLOAD ${size}x${size}`;
+
+          downloadBox.appendChild(link);
+          downloads.appendChild(downloadBox);
+
+          status.textContent = `CONVERSION COMPLETE: ${size}x${size}.PNG`;
+        };
+
+        img.src = event.target.result;
+      };
+
+      reader.readAsDataURL(imageFile);
+    });
+  </script>
+</body>
+</html>
