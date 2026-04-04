@@ -1,96 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>deZIP - DOS Style</title>
-<style>
-    body { margin: 0; background: black; overflow: hidden; cursor: text; }
-    #terminal { color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; font-size: 18px; line-height: 1.2; }
-    #output-container { flex: 1; overflow-y: auto; scrollbar-width: none; }
-    #output-container::-webkit-scrollbar { display: none; }
-    button { background: black; border: 1px solid #00ff00; color: #00ff00; font-family: inherit; padding: 4px 12px; cursor: pointer; font-size: 14px; text-transform: uppercase; }
-    button:hover { background: #003300; }
-    .info { color: #ffff00; }
-    .success { color: #88ff88; }
-    .error { color: #ff5555; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nins / deZIP.sys</title>
+
+  <style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-fg-dim: #4dbd74;
+      --dos-invert-bg: #00ff66;
+      --dos-invert-fg: #000000;
+      --dos-border: #00ff66;
+      --crt-flicker: flicker 0.15s infinite;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    @keyframes flicker {
+      0%   { opacity: 0.97; }
+      5%   { opacity: 0.99; }
+      10%  { opacity: 0.98; }
+      100% { opacity: 0.99; }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      text-shadow: 0 0 4px currentColor;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 掃描線特效 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 9999;
+      opacity: 0.18;
+    }
+
+    /* 主螢幕容器 */
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--dos-border);
+      background: rgba(0, 255, 102, 0.02);
+      display: flex;
+      flex-direction: column;
+      animation: var(--crt-flicker);
+    }
+
+    /* 統一區塊組件 */
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 12px;
+      margin-bottom: 12px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .topbar {
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-bottom: 2px solid var(--dos-border);
+    }
+
+    .menu {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* 統一按鈕風格 */
+    button {
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      padding: 8px 16px;
+      font: inherit;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: none;
+    }
+
+    button:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    /* 輸出終端區 */
+    #output-container {
+      flex: 1;
+      overflow-y: auto;
+      font-size: 1rem;
+      line-height: 1.4;
+      scrollbar-width: thin;
+      scrollbar-color: var(--dos-fg) transparent;
+    }
+
+    #output-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    #output-container::-webkit-scrollbar-thumb {
+      background: var(--dos-fg);
+    }
+
+    .info { color: var(--dos-fg-soft); }
+    .success { color: #ffffff; font-weight: bold; background: rgba(0, 255, 102, 0.2); }
+    .error { color: #ff5555; border: 1px solid #ff5555; padding: 2px 4px; }
+    
+    a {
+      color: var(--dos-fg);
+      text-decoration: underline;
+    }
+    a:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+    }
+
     #hidden-input { display: none; }
-</style>
+
+    .status-bar {
+      font-size: 0.85rem;
+      color: var(--dos-fg-dim);
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
 </head>
 <body>
-<div id="terminal">
-    <div class="menu">
-        <button id="selectZipBtn">Select ZIP File</button>
-        <button id="extractZipBtn">Extract ZIP</button>
-        <input type="file" id="hidden-input" accept=".zip" />
+  <div class="screen">
+    <div class="topbar dos-block">
+      DEZIP.SYS [Version 2026.04.04] - EXTRACTION UTILITY
     </div>
-    <div id="output-container">
-        <div id="display-text">DOS Style ZIP Extractor\n</div>
+
+    <div class="menu dos-block">
+      <button id="selectZipBtn">SELECT ZIP</button>
+      <button id="extractZipBtn">RUN EXTRACT</button>
+      <input type="file" id="hidden-input" accept=".zip" />
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script>
-const hiddenInput = document.getElementById("hidden-input");
-const selectZipBtn = document.getElementById("selectZipBtn");
-const extractZipBtn = document.getElementById("extractZipBtn");
-const displayText = document.getElementById("display-text");
-let selectedFile = null;
+    <div id="output-container" class="dos-block">
+      <div id="display-text">SYSTEM READY.<br>AWAITING INPUT_</div>
+    </div>
 
-function log_v0(msg, type="info") {
-    const span = document.createElement("span");
-    span.textContent = msg + "\n";
-    span.className = type;
-    displayText.appendChild(span);
-    displayText.parentElement.scrollTop = displayText.parentElement.scrollHeight;
-}
-function log(msg, type="info"){
-    const line = document.createElement("div");
-    line.textContent = msg;
-    line.className = type;
-    displayText.appendChild(line);
-    displayText.parentElement.scrollTop = displayText.parentElement.scrollHeight;
-}
+    <div class="status-bar">
+      <span>LOCATION: C:\NINS\TOOLS\DEZIP</span>
+      <span>STATUS: IDLE</span>
+    </div>
+  </div>
 
-selectZipBtn.addEventListener("click", () => {
-    hiddenInput.click();
-});
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script>
+    const hiddenInput = document.getElementById("hidden-input");
+    const selectZipBtn = document.getElementById("selectZipBtn");
+    const extractZipBtn = document.getElementById("extractZipBtn");
+    const displayText = document.getElementById("display-text");
+    let selectedFile = null;
 
-hiddenInput.addEventListener("change", () => {
-    selectedFile = hiddenInput.files[0] || null;
-    if (selectedFile) log("Selected ZIP: " + selectedFile.name, "info");
-});
+    function log(msg, type = "info") {
+      const line = document.createElement("div");
+      line.className = type;
+      line.innerHTML = `<span style="color:var(--dos-fg-dim)">></span> ${msg}`;
+      displayText.appendChild(line);
+      
+      // 自動滾動到底部
+      const container = document.getElementById("output-container");
+      container.scrollTop = container.scrollHeight;
+    }
 
-extractZipBtn.addEventListener("click", async () => {
-    if (!selectedFile) { log("Please select a ZIP file first.", "error"); return; }
-    log("Extracting ZIP...", "info");
+    selectZipBtn.addEventListener("click", () => {
+      hiddenInput.click();
+    });
 
-    try {
+    hiddenInput.addEventListener("change", () => {
+      selectedFile = hiddenInput.files[0] || null;
+      if (selectedFile) {
+        log(`SELECTED_FILE: ${selectedFile.name.toUpperCase()}`, "info");
+      }
+    });
+
+    extractZipBtn.addEventListener("click", async () => {
+      if (!selectedFile) {
+        log("ERROR: NO ZIP FILE SELECTED.", "error");
+        return;
+      }
+      
+      log("STARTING EXTRACTION SEQUENCE...", "info");
+
+      try {
         const buffer = await selectedFile.arrayBuffer();
         const zip = await JSZip.loadAsync(buffer);
+        let count = 0;
 
         for (const name of Object.keys(zip.files)) {
-            const zipFile = zip.files[name];
-            if (!zipFile.dir) {
-                const blob = await zipFile.async("blob");
-                const a = document.createElement("a");
-                a.href = URL.createObjectURL(blob);
-                a.download = name.replace(/\//g, "_"); // DOS-friendly
-                a.textContent = name;
-                displayText.appendChild(document.createTextNode("Extracted: "));
-                displayText.appendChild(a);
-                displayText.appendChild(document.createTextNode("\n"));
-            } else {
-                log("Skipped directory: " + name, "info");
-            }
+          const zipFile = zip.files[name];
+          if (!zipFile.dir) {
+            const blob = await zipFile.async("blob");
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = name.replace(/\//g, "_");
+            a.textContent = `[ DOWNLOAD: ${name} ]`;
+
+            const downloadLine = document.createElement("div");
+            downloadLine.style.margin = "4px 0";
+            downloadLine.innerHTML = `<span style="color:var(--dos-fg-dim)">+</span> EXTRACTED: `;
+            downloadLine.appendChild(a);
+            displayText.appendChild(downloadLine);
+            count++;
+          }
         }
 
-        log("ZIP extraction completed.", "success");
-    } catch (err) {
+        log(`EXTRACTION COMPLETE. ${count} FILES PROCESSED.`, "success");
+      } catch (err) {
         console.error(err);
-        log("Failed to extract ZIP.", "error");
-    }
-});
-</script>
+        log("FATAL ERROR: FAILED TO READ ZIP STRUCTURE.", "error");
+      }
+    });
+  </script>
 </body>
 </html>
