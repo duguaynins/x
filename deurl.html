@@ -2,8 +2,8 @@
 <html lang="en">
 <head translate="yes">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="© 2024 NINS (by JPGT).">
   <link rel="canonical" href="https://copyright.nins.cc/">
   <title translate="no">nins/deurl.sys</title>
 
@@ -21,7 +21,24 @@
       --crt-flicker: flicker 0.15s infinite;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    /* 設定所有連結的初始顏色為黃色 */
+    a {
+      color: #ffff00; /* 黃色 */
+      text-decoration: underline; /* 增加底線，視覺上更像連結 */
+      transition: color 0.2s; /* 增加顏色過渡動畫，看起來更順滑 */
+    }
+
+    /* 當滑鼠移過（懸停）時變為紅色 */
+    a:hover {
+      color: greenyellow; /* 紅色 #ff0000 */
+      text-shadow: 0 0 8px greenyellow; /* 增加發光效果，符合你原本的 CRT 風格 #ff0000 */
+    }
+
+    /* 針對 [F3] 報告連結的專門美化（可選） */
+    .line a {
+      font-weight: bold;
+    }
 
     @keyframes flicker {
       0% { opacity: 0.97; }
@@ -38,7 +55,7 @@
       font-family: "Courier New", Consolas, Monaco, monospace;
       text-shadow: 0 0 4px currentColor;
       height: 100%;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     body::before {
@@ -54,28 +71,28 @@
         transparent 3px
       );
       z-index: 9999;
-      opacity: 0.18;
+      opacity: 0.12;
     }
 
     .screen {
       position: relative;
       z-index: 1;
       width: 100%;
-      height: 100%;
+      min-height: 100vh;
       max-width: 1280px;
       margin: 0 auto;
-      padding: 16px;
-      border: 2px solid var(--dos-border);
+      padding: 12px;
+      border: 1px solid var(--dos-border);
       background: rgba(0, 255, 102, 0.02);
       display: flex;
       flex-direction: column;
       animation: var(--crt-flicker);
-      gap: 12px;
+      gap: 10px;
     }
 
     .dos-block {
       border: 1px solid var(--dos-border);
-      padding: 12px;
+      padding: 10px;
       background: rgba(0, 255, 102, 0.03);
     }
 
@@ -84,135 +101,147 @@
       letter-spacing: 1px;
       border-bottom: 2px solid var(--dos-border);
       display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
     }
 
-    .muted { color: var(--dos-fg-dim); }
+    .muted { color: var(--dos-fg-dim); font-size: 0.8rem; }
     .soft { color: var(--dos-fg-soft); }
     .danger { color: var(--danger); }
     .warn { color: var(--warn); }
 
-    .menu, .input-row, .shortcut-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+    .menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
+
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* 網址快選區：手機改為橫向滑動避免頁面拉得太長 */
+    #url-slider {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 10px 5px;
+      border-style: dashed;
+      scrollbar-width: none; /* Firefox */
+    }
+    #url-slider::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
     button, input[type="text"], a.shortcut-link {
       background: transparent;
       color: var(--dos-fg);
       border: 1px solid var(--dos-border);
-      padding: 10px 14px;
+      padding: 12px;
       font: inherit;
       text-transform: uppercase;
       text-decoration: none;
       outline: none;
-      min-height: 44px;
+      min-height: 48px; /* 符合手機觸控規範 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
-    button, a.shortcut-link { cursor: pointer; }
+    #url-slider button {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 120px;
+      font-size: 0.75rem;
+      padding: 8px 12px;
+    }
 
-    button:hover, button:focus, input[type="text"]:focus, a.shortcut-link:hover {
+    button:active {
       background: var(--dos-invert-bg);
       color: var(--dos-invert-fg);
-      text-shadow: none;
     }
 
     input[type="text"] {
-      flex: 1;
+      width: 100%;
       text-transform: none;
-      min-width: 260px;
+      background: rgba(0, 255, 102, 0.05);
     }
 
     #content {
       user-select: text;
       flex: 1;
+      min-height: 150px;
       overflow-y: auto;
-      line-height: 1.6;
+      line-height: 1.5;
       white-space: pre-wrap;
-    }
-
-    #content a {
-      color: var(--dos-fg-soft);
+      font-size: 0.9rem;
+      border-style: double;
     }
 
     .status-bar {
-      font-size: 0.85rem;
+      font-size: 0.7rem;
       color: var(--dos-fg-dim);
       display: flex;
       justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 4px;
     }
 
     dialog {
       background: #000;
       color: var(--dos-fg);
-      border: 1px solid var(--dos-border);
-      width: min(720px, calc(100vw - 24px));
+      border: 2px solid var(--dos-border);
+      width: 90vw;
+      max-height: 80vh;
     }
 
-    dialog::backdrop { background: rgba(0,0,0,0.7); }
-    pre { white-space: pre-wrap; word-break: break-word; }
+    @media (min-width: 768px) {
+      .topbar { flex-direction: row; justify-content: space-between; }
+      .input-row { flex-direction: row; }
+      .menu { grid-template-columns: repeat(4, 1fr); }
+    }
+
     .hidden { display: none !important; }
-    .line { margin: 4px 0; }
-    .pill { border: 1px solid var(--dos-border); padding: 6px 10px; }
+    .line { margin: 4px 0; display: block; }
   </style>
 </head>
 <body>
-<!--script src="https://copyright.nins.cc/children/0001/nins-update.js"></script!-->
 
 <div class="screen">
   <div class="topbar dos-block">
-    <span>© NINS / DEURL.SYS [VERSION 2026.04.04]</span>
-    <span class="soft">ZERO-TRUST URL INSPECTOR</span>
+    <span>© NINS / DEURL.SYS [2026.04.04]</span>
+    <span class="soft">ZERO-TRUST INSPECTOR</span>
   </div>
 
-  <div class="dos-block muted">CHECK A LINK'S DESTINATION BEFORE ENTERING UNKNOWN TERRITORY.</div>
+  <div class="dos-block muted">PREVIEW DESTINATIONS BEFORE ACCESSING LINKS.</div>
 
   <div class="menu dos-block">
-    <button type="button" class="use" onclick="document.getElementById('input_qr').click();">[ F1 ] LOAD IMAGE</button>
-    <button type="button" class="use" onclick="send()">[ F2 ] ANALYZE URL</button>
-    <!--button type="button" class="use" onclick="document.getElementById('DialogCheck').showModal();">[ F3 ] LOG</button>
-    <button type="button" class="use" onclick="document.getElementById('DialogTrans').showModal();">[ F4 ] LANG</button!-->
+    <button type="button" onclick="document.getElementById('input_qr').click();">[ F1 ] IMAGE</button>
+    <button type="button" onclick="send()">[ F2 ] ANALYZE</button>
     <input type="file" id="input_qr" class="hidden" accept="image/*">
     <canvas id="canvas_qr" class="hidden"></canvas>
   </div>
 
-  <!--div id="content" class="dos-block">SYSTEM READY.\n\n1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.\n2. RUN ANALYSIS.\n3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</div!--> 
   <div id="content" class="dos-block">>
-    <span>[ F1 ] ENTER A URL OR LOAD A QR / BARCODE IMAGE.</span>
-    <span>[ F2 ] RUN ANALYSIS.</span>
-    <span>[ F3 ] OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</span>
+    <span class="line">[ F1 ] UPLOAD QR / BARCODE IMAGE.</span>
+    <span class="line">[ F2 ] MANUALLY ENTER URL BELOW.</span>
+    <span class="line">[ F3 ] GENERATE AI SECURITY REPORT.</span>
   </div>
-  <div id="url-slider" class="dos-block shortcut-row"></div>
+
+  <div id="url-slider" class="dos-block"></div>
 
   <div class="dos-block input-row">
-    <button type="button" class="use" onclick="send()">RUN</button>
     <input id="input_msg" type="text" name="url" autocomplete="off" placeholder="HTTPS://GOOGLE.COM/" />
-    <button type="button" class="use" onclick="send()">EXEC</button>
+    <button type="button" style="flex: 0 0 80px;" onclick="send()">EXEC</button>
   </div>
 
-  <div class="dos-block muted">BY SENDING A MESSAGE TO THIS SERVICE, YOU AGREE TO ANY CONTENT AND ALL CONTENT.</div>
-
   <div class="status-bar">
-    <span>LOCATION: C:\\NINS\\NET\\DEURL</span>
+    <span>LOC: C:\NINS\DEURL</span>
     <span id="statusText">STATUS: READY</span>
   </div>
 </div>
-
-<dialog id="DialogTrans" translate="no">
-  <div id="google_translate_element" style="display:block;"></div><br>
-  <button style="width: 100%;" onclick="document.getElementById('DialogTrans').close();">[ ESC ] BACK</button>
-</dialog>
-
-<dialog id="DialogCheck" translate="no">
-  <pre id="logOutput" style="max-height:200px; overflow:auto; margin:0;"></pre><br>
-  <button style="width: 100%;" onclick="document.getElementById('DialogCheck').close();">[ ESC ] BACK</button>
-</dialog>
 
 <script>
 const urls = [
