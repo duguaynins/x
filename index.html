@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!">
+  <link rel="canonical" href="https://copyright.nins.cc/">
+  <title>nins / index.sys</title>
+
+
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#010101">
   <script>
@@ -9,9 +16,6 @@
   }
   </script>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nins / index.sys</title>
 
   <style>
     :root {
@@ -375,6 +379,24 @@
         badge: ["BETA"]
       },
       {
+        title: "nins/rezoom",
+        description: "HE!HE!HE!",
+        repo: null,
+        url: "https://x.nins.cc/rezoom",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/deurl",
+        description: "HE!HE!HE!",
+        repo: null,
+        url: "https://x.nins.cc/deurl",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
         title: "nins/forms",
         description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
         repo: "google.forms",
@@ -384,13 +406,13 @@
         badge: ["FORM"]
       },
       {
-        title: "nins/cospeaking",
+        title: "nins/rezoom",
         description: "Romanized spelling for all languages.",
         repo: "cospeaking",
         url: "https://cospeaking.nins.cc",
         category: "language",
         priority: 1,
-        badge: ["HOT", "BETA"]
+        badge: ["STAR", "BETA"]
       },
       {
         title: "nins/encoding",
@@ -415,7 +437,7 @@
         description: "Quickly create your own contact URL in HTTPS.",
         repo: "uris",
         url: "https://uris.nins.cc",
-        category: "main",
+        category: "top",
         priority: 3,
         badge: ["STAR"]
       },
@@ -424,7 +446,7 @@
         description: "Check a link’s destination first, and don’t walk straight into trouble.",
         repo: "deurl",
         url: "https://deurl.nins.cc",
-        category: "main",
+        category: "top",
         priority: 3,
         badge: ["STAR", "SAFE"]
       },
@@ -433,7 +455,7 @@
         description: "Use chat channels to easily start communicating with anyone.",
         repo: "transing",
         url: "https://transing.nins.cc",
-        category: "main",
+        category: "top",
         priority: 2,
         badge: ["HOT", "STAR"]
       },
@@ -484,14 +506,18 @@
     function createAppRow(app) {
       const item = document.createElement("div");
       item.classList.add("feature-item");
-      if ((app.category || "").toLowerCase() === "notice") item.classList.add("notice");
+      item.classList.add(app.category || "other");
+
+      if ((app.category || "").toLowerCase() === "notice") {
+        item.classList.add("notice");
+      }
 
       const line = document.createElement("div");
       line.classList.add("app-line");
 
       const title = document.createElement("span");
       title.classList.add("app-title");
-      title.textContent = `> ${app.title.toUpperCase()}`;
+      title.textContent = `> ${app.title}`;
 
       const category = document.createElement("span");
       category.classList.add("app-meta");
@@ -500,13 +526,26 @@
       line.appendChild(title);
       line.appendChild(category);
 
-      if (app.badge) {
+      if (app.badge && app.badge.length) {
         app.badge.forEach(tag => {
           const badge = document.createElement("span");
           badge.classList.add("feature-badge-inline");
           badge.textContent = `[${tag}]`;
           line.appendChild(badge);
         });
+      }
+
+      if (app.url) {
+        const urlSpan = document.createElement("span");
+        urlSpan.classList.add("app-url");
+
+        if (app.url === "custom-follow") {
+          urlSpan.textContent = "https://docs.google.com/forms/.../follow";
+        } else {
+          urlSpan.textContent = app.url;
+        }
+
+        line.appendChild(urlSpan);
       }
 
       item.appendChild(line);
@@ -518,8 +557,16 @@
         item.appendChild(desc);
       }
 
-      if ((app.category || "").toLowerCase() !== "notice") {
+      const isClickable =
+        app.repo ||
+        app.title === "nins/forms" ||
+        app.title === "nins/follow" ||
+        (app.url && app.url.startsWith("http"));
+
+      if (isClickable && (app.category || "").toLowerCase() !== "notice") {
         item.addEventListener("click", () => openByApp(app));
+      } else {
+        item.style.cursor = "default";
       }
 
       return item;
@@ -527,7 +574,17 @@
 
     function renderApps(data) {
       featureGrid.innerHTML = "";
+
+      if (!data.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "NO MATCH FOUND. Try app name, category, url, or keyword.";
+        featureGrid.appendChild(empty);
+        return;
+      }
+
       const sorted = [...data].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+
       const categories = {};
       sorted.forEach(app => {
         const cat = app.category || "other";
@@ -536,41 +593,67 @@
       });
 
       const categoryOrder = ["notice", "main", "tools", "language", "feedback", "info", "other"];
+
       Object.keys(categories)
-        .sort((a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b))
+        .sort((a, b) => {
+          const ia = categoryOrder.indexOf(a);
+          const ib = categoryOrder.indexOf(b);
+          return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+        })
         .forEach(cat => {
           const section = document.createElement("div");
           section.classList.add("feature-category");
+
           const title = document.createElement("h3");
           title.textContent = `[ ${cat.toUpperCase()} ]`;
           section.appendChild(title);
-          categories[cat].forEach(app => section.appendChild(createAppRow(app)));
+
+          categories[cat].forEach(app => {
+            section.appendChild(createAppRow(app));
+          });
+
           featureGrid.appendChild(section);
         });
     }
 
     // =========================================================
-    // SEARCH LOGIC
+    // SEARCH
     // =========================================================
-    const searchInput = document.getElementById("search");
-    document.querySelectorAll(".quick-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        searchInput.value = btn.dataset.keyword || "";
-        searchInput.dispatchEvent(new Event("input"));
-        ///searchInput.focus();  ///20260404
-      });
-    });
+    const searchInput = document.getElementById("search");  ///NEW***
+    const quickButtons = document.querySelectorAll(".quick-btn");
 
-    searchInput.addEventListener("input", e => {
+    quickButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const keyword = btn.dataset.keyword || "";
+        searchInput.value = keyword;
+
+        // 觸發 input 事件，沿用原本搜尋邏輯
+        searchInput.dispatchEvent(new Event("input"));
+
+        ///searchInput.focus();
+      });
+    });  ///NEW***
+
+    document.getElementById("search").addEventListener("input", e => {
       const query = e.target.value.trim().toLowerCase();
-      const filtered = appsData.filter(app => 
-        app.title.toLowerCase().includes(query) || 
-        app.category.toLowerCase().includes(query) ||
-        app.description.toLowerCase().includes(query)
-      );
+
+      const filtered = appsData.filter(app => {
+        return (
+          (app.title || "").toLowerCase().includes(query) ||
+          (app.description || "").toLowerCase().includes(query) ||
+          (app.category || "").toLowerCase().includes(query) ||
+          (app.url || "").toLowerCase().includes(query) ||
+          (app.repo || "").toLowerCase().includes(query) ||
+          (app.badge || []).join(" ").toLowerCase().includes(query)
+        );
+      });
+
       renderApps(filtered);
     });
 
+    // =========================================================
+    // INIT
+    // =========================================================
     renderApps(appsData);
 
     // =========================================================
