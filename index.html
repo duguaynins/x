@@ -472,7 +472,8 @@
     function openByApp(app) {
       if (app.title === "nins/forms") { window.open(app.url, "_blank"); return; }
       if (app.title === "nins/follow") { openFollow(); return; }
-      if (app.url && app.url.startsWith("http")) { window.open(app.url, "_blank"); }
+      ///if (app.url && app.url.startsWith("http")) { window.open(app.url, "_blank"); }
+      if (app.url && app.url.startsWith("http")) { loadPage(app.url);/*window.open(app.url, "_blank");*/ }
     }
 
     // =========================================================
@@ -571,6 +572,31 @@
     });
 
     renderApps(appsData);
+
+    // =========================================================
+    // LOAD
+    // =========================================================
+    async function loadPage(url) {
+      try {
+        const response = await fetch(url);
+        const htmlText = await response.text();
+
+        // 建立一個暫存容器解析 HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+
+        // 假設你只想要 <body> 內的內容
+        const content = doc.body.innerHTML;
+
+        // 放入 SPA 內的容器
+        document.getElementById('main-content').innerHTML = content;
+
+        // 改變 URL（不 reload）
+        history.pushState({ page: url }, '', '/' + url.split('/').pop());
+      } catch (err) {
+        console.error('載入頁面失敗:', err);
+      }
+    }
   </script>
 </body>
 </html>
