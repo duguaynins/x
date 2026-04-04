@@ -377,8 +377,26 @@
         repo: null,
         url: "",
         category: "notice",
-        priority: 0,
+        priority: 9,
         badge: []
+      },
+      {
+        title: "nins/+ZIP",  ///20260404
+        description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
+        repo: "google.forms",
+        url: "https://x.nins.cc/doZIP",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/-ZIP",  ///20260404
+        description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
+        repo: "google.forms",
+        url: "https://x.nins.cc/deZIP",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
       },
       {
         title: "nins/forms",
@@ -505,11 +523,11 @@
         window.open(app.url, "_blank", "noopener,noreferrer");
         return;
       }
-
-      if (app.repo) {
+      /*
+      if (app.repo) {  ///***  ///20260404
         openApp(app.repo, app.file ?? "", app.dir ?? "/children/");
         return;
-      }
+      }  */
 
       if (app.url && app.url.startsWith("http")) {
         window.open(app.url, "_blank", "noopener,noreferrer");
