@@ -16,10 +16,19 @@
       --dos-border: #00ff66;
       --dos-warning: #ffffff;
       --dos-warning-bg: #111111;
+      /* 新增：統一的閃爍變數 */
+      --crt-flicker: flicker 0.15s infinite;
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    @keyframes flicker {
+      0%   { opacity: 0.97; }
+      5%   { opacity: 0.99; }
+      10%  { opacity: 0.98; }
+      100% { opacity: 0.99; }
     }
 
     html, body {
@@ -32,6 +41,7 @@
       min-height: 100%;
     }
 
+    /* 掃描線特效 */
     body::before {
       content: "";
       position: fixed;
@@ -48,13 +58,14 @@
       opacity: 0.18;
     }
 
-    .screen_v0 {
-      position: relative;
-      z-index: 1;
-      padding: 12px;
-      max-width: 1200px;
-      margin: 0 auto;
+    /* 統一區塊組件 */
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 10px;
+      margin-bottom: 12px;
+      background: rgba(0, 255, 102, 0.03);
     }
+
     .screen {
       position: relative;
       z-index: 1;
@@ -65,14 +76,12 @@
       padding: 16px;
       border: 2px solid var(--dos-border);
       background: rgba(0, 255, 102, 0.02);
+      /* 加入閃爍動畫 */
+      animation: var(--crt-flicker);
     }
 
-    .topbar,
-    .bottombar {
-      border: 1px solid var(--dos-border);
-      padding: 8px 10px;
-      margin-bottom: 10px;
-      background: rgba(0, 255, 102, 0.03);
+    .topbar {
+      /* 套用 dos-block 邏輯 */
     }
 
     .topbar-line {
@@ -94,13 +103,9 @@
     }
 
     .search-wrap {
-      border: 1px solid var(--dos-border);
-      padding: 8px 10px;
-      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(0, 255, 102, 0.03);
     }
 
     .prompt {
@@ -129,38 +134,33 @@
       color: var(--dos-fg-dim);
       font-size: 0.9rem;
       margin-bottom: 12px;
-    }
-
-    .feature-grid {
-      display: block;
+      padding-left: 4px;
     }
 
     .feature-category {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
+    /* 統一分類標題風格 */
     .feature-category h3 {
       margin: 0 0 8px;
-      padding: 6px 8px;
-      border-top: 1px solid var(--dos-border);
-      border-bottom: 1px solid var(--dos-border);
+      padding: 6px 10px;
+      border: 1px solid var(--dos-border);
       font-size: 1rem;
       letter-spacing: 1px;
       color: var(--dos-fg);
-      background: rgba(0, 255, 102, 0.03);
+      background: rgba(0, 255, 102, 0.1);
     }
 
     .feature-item {
       display: block;
-      padding: 8px 10px;
+      padding: 10px;
       margin-bottom: 6px;
       background: transparent;
       color: var(--dos-fg);
       border: 1px solid transparent;
       cursor: pointer;
       transition: none;
-      border-radius: 0;
-      box-shadow: none;
     }
 
     .feature-item:hover {
@@ -177,6 +177,7 @@
       text-shadow: none;
     }
 
+    /* Notice 區塊特殊處理 */
     .feature-item.notice {
       color: var(--dos-warning);
       background: var(--dos-warning-bg);
@@ -237,13 +238,6 @@
       text-shadow: none;
     }
 
-    .empty {
-      border: 1px dashed var(--dos-border);
-      padding: 12px;
-      color: var(--dos-fg-soft);
-      background: rgba(0, 255, 102, 0.03);
-    }
-
     .footer-links {
       display: flex;
       flex-wrap: wrap;
@@ -263,38 +257,17 @@
       text-shadow: none;
     }
 
-    @media (max-width: 768px) {
-      .app-title {
-        min-width: 100%;
-      }
-
-      .app-desc {
-        padding-left: 0;
-      }
-
-      .topbar-line {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .search-wrap {
-        flex-direction: column;
-        align-items: stretch;
-      }
-    }
-    
     .quick-search {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 12px;
     }
 
     .quick-btn {
       background: transparent;
       color: var(--dos-fg);
       border: 1px solid var(--dos-border);
-      padding: 6px 10px;
+      padding: 6px 12px;
       font: inherit;
       cursor: pointer;
       text-shadow: 0 0 4px currentColor;
@@ -308,32 +281,29 @@
       text-shadow: none;
     }
 
-    .quick-btn:focus {
-      outline: none;
-      background: var(--dos-invert-bg);
-      color: var(--dos-invert-fg);
-      text-shadow: none;
+    @media (max-width: 768px) {
+      .app-title { min-width: 100%; }
+      .app-desc { padding-left: 0; }
+      .topbar-line { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
   <div class="screen">
 
-    <!-- Top Bar -->
-    <div class="topbar">
+    <div class="topbar dos-block">
       <div class="topbar-line">
         <div class="brand">© nins. / CHILDREN SYSTEM READY</div>
         <div class="subtitle">Choose the abilities you need.</div>
       </div>
     </div>
 
-    <!-- Search -->
-    <div class="search-wrap">
+    <div class="search-wrap dos-block">
       <div class="prompt">SEARCH&gt;</div>
       <input type="text" id="search" placeholder="app / category / url / keyword" />
     </div>
 
-    <div class="quick-search" id="quickSearch">
+    <div class="quick-search dos-block" id="quickSearch">
       <button type="button" class="quick-btn" data-keyword="">[ALL]</button>
       <button type="button" class="quick-btn" data-keyword="main">[MAIN]</button>
       <button type="button" class="quick-btn" data-keyword="tools">[TOOLS]</button>
@@ -349,14 +319,13 @@
     </div>
 
     <div class="hint">
-      Search supports: <strong>title</strong>, <strong>description</strong>, <strong>category</strong>, <strong>url</strong>
+      <p>Search supports: title, description, category, url</p>
+      <!--p>TYPE COMMAND TO FILTER_</p!-->
     </div>
 
-    <!-- App List -->
     <div class="feature-grid" id="featureGrid"></div>
 
-    <!-- Bottom -->
-    <div class="bottombar">
+    <div class="bottombar dos-block">
       <div>© 2024 NINS (by JPGT).</div>
       <div class="footer-links">
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?" target="_blank" rel="noopener noreferrer">nins/forms</a>
@@ -367,9 +336,7 @@
   </div>
 
   <script>
-    // =========================================================
-    // JSON DATA  ///⚠️ 
-    // =========================================================
+    // 資料部分保持不變
     const appsData = [
       {
         title: "Notice",
@@ -381,18 +348,18 @@
         badge: []
       },
       {
-        title: "nins/+ZIP",  ///20260404
-        description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
-        repo: "google.forms",
+        title: "nins/+ZIP",
+        description: "Create ZIP archives directly in your terminal browser.",
+        repo: null,
         url: "https://x.nins.cc/doZIP",
         category: "main",
         priority: 8,
         badge: ["BETA"]
       },
       {
-        title: "nins/-ZIP",  ///20260404
-        description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
-        repo: "google.forms",
+        title: "nins/-ZIP",
+        description: "Extract ZIP files with DOS-friendly naming conventions.",
+        repo: null,
         url: "https://x.nins.cc/deZIP",
         category: "main",
         priority: 8,
@@ -436,7 +403,7 @@
       },
       {
         title: "nins/uris",
-        description: "Quickly create your own contact URL in HTTPS. Give a 'Vivre Card / Soul Paper' to everything that matters!",
+        description: "Quickly create your own contact URL in HTTPS.",
         repo: "uris",
         url: "https://uris.nins.cc",
         category: "main",
@@ -484,54 +451,19 @@
     // =========================================================
     // OPEN FUNCTIONS
     // =========================================================
-    function openApp(repo, path="", dir="/children/", file="") {
-      if(!repo) return;
-      const href = "https://" + repo + ".nins.cc" + path;
-      window.open(href, "_blank", "noopener,noreferrer");
-    }
-
-    function openForm() {
-      const href = "https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?";
-      window.open(href, "_blank", "noopener,noreferrer");
-    }
-
     function openFollow() {
       try {
-        const subscription = (window.Cookies && Cookies.get("webpush")) || "";
-        const subscriptionJson = JSON.stringify(subscription);
-        const encodedSubscription = encodeURIComponent(subscriptionJson);
-        const href = `https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform?usp=pp_url&entry.1788803497=${encodedSubscription}`;
+        const href = `https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform`;
         window.open(href, "_blank", "noopener,noreferrer");
       } catch (err) {
-        const fallback = "https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform";
-        window.open(fallback, "_blank", "noopener,noreferrer");
+        window.open("https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform", "_blank");
       }
     }
 
     function openByApp(app) {
-      if (app.title === "nins/forms") {
-        openForm();
-        return;
-      }
-
-      if (app.title === "nins/follow") {
-        openFollow();
-        return;
-      }
-
-      if (app.title === "admins" && app.url) {
-        window.open(app.url, "_blank", "noopener,noreferrer");
-        return;
-      }
-      /*
-      if (app.repo) {  ///***  ///20260404
-        openApp(app.repo, app.file ?? "", app.dir ?? "/children/");
-        return;
-      }  */
-
-      if (app.url && app.url.startsWith("http")) {
-        window.open(app.url, "_blank", "noopener,noreferrer");
-      }
+      if (app.title === "nins/forms") { window.open(app.url, "_blank"); return; }
+      if (app.title === "nins/follow") { openFollow(); return; }
+      if (app.url && app.url.startsWith("http")) { window.open(app.url, "_blank"); }
     }
 
     // =========================================================
@@ -542,18 +474,14 @@
     function createAppRow(app) {
       const item = document.createElement("div");
       item.classList.add("feature-item");
-      item.classList.add(app.category || "other");
-
-      if ((app.category || "").toLowerCase() === "notice") {
-        item.classList.add("notice");
-      }
+      if ((app.category || "").toLowerCase() === "notice") item.classList.add("notice");
 
       const line = document.createElement("div");
       line.classList.add("app-line");
 
       const title = document.createElement("span");
       title.classList.add("app-title");
-      title.textContent = `> ${app.title}`;
+      title.textContent = `> ${app.title.toUpperCase()}`;
 
       const category = document.createElement("span");
       category.classList.add("app-meta");
@@ -562,26 +490,13 @@
       line.appendChild(title);
       line.appendChild(category);
 
-      if (app.badge && app.badge.length) {
+      if (app.badge) {
         app.badge.forEach(tag => {
           const badge = document.createElement("span");
           badge.classList.add("feature-badge-inline");
           badge.textContent = `[${tag}]`;
           line.appendChild(badge);
         });
-      }
-
-      if (app.url) {
-        const urlSpan = document.createElement("span");
-        urlSpan.classList.add("app-url");
-
-        if (app.url === "custom-follow") {
-          urlSpan.textContent = "https://docs.google.com/forms/.../follow";
-        } else {
-          urlSpan.textContent = app.url;
-        }
-
-        line.appendChild(urlSpan);
       }
 
       item.appendChild(line);
@@ -593,16 +508,8 @@
         item.appendChild(desc);
       }
 
-      const isClickable =
-        app.repo ||
-        app.title === "nins/forms" ||
-        app.title === "nins/follow" ||
-        (app.url && app.url.startsWith("http"));
-
-      if (isClickable && (app.category || "").toLowerCase() !== "notice") {
+      if ((app.category || "").toLowerCase() !== "notice") {
         item.addEventListener("click", () => openByApp(app));
-      } else {
-        item.style.cursor = "default";
       }
 
       return item;
@@ -610,17 +517,7 @@
 
     function renderApps(data) {
       featureGrid.innerHTML = "";
-
-      if (!data.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "NO MATCH FOUND. Try app name, category, url, or keyword.";
-        featureGrid.appendChild(empty);
-        return;
-      }
-
       const sorted = [...data].sort((a, b) => (b.priority || 0) - (a.priority || 0));
-
       const categories = {};
       sorted.forEach(app => {
         const cat = app.category || "other";
@@ -629,67 +526,41 @@
       });
 
       const categoryOrder = ["notice", "main", "tools", "language", "feedback", "info", "other"];
-
       Object.keys(categories)
-        .sort((a, b) => {
-          const ia = categoryOrder.indexOf(a);
-          const ib = categoryOrder.indexOf(b);
-          return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-        })
+        .sort((a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b))
         .forEach(cat => {
           const section = document.createElement("div");
           section.classList.add("feature-category");
-
           const title = document.createElement("h3");
           title.textContent = `[ ${cat.toUpperCase()} ]`;
           section.appendChild(title);
-
-          categories[cat].forEach(app => {
-            section.appendChild(createAppRow(app));
-          });
-
+          categories[cat].forEach(app => section.appendChild(createAppRow(app)));
           featureGrid.appendChild(section);
         });
     }
 
     // =========================================================
-    // SEARCH
+    // SEARCH LOGIC
     // =========================================================
-    const searchInput = document.getElementById("search");  ///NEW***
-    const quickButtons = document.querySelectorAll(".quick-btn");
-
-    quickButtons.forEach(btn => {
+    const searchInput = document.getElementById("search");
+    document.querySelectorAll(".quick-btn").forEach(btn => {
       btn.addEventListener("click", () => {
-        const keyword = btn.dataset.keyword || "";
-        searchInput.value = keyword;
-
-        // 觸發 input 事件，沿用原本搜尋邏輯
+        searchInput.value = btn.dataset.keyword || "";
         searchInput.dispatchEvent(new Event("input"));
-
-        searchInput.focus();
+        ///searchInput.focus();  ///20260404
       });
-    });  ///NEW***
+    });
 
-    document.getElementById("search").addEventListener("input", e => {
+    searchInput.addEventListener("input", e => {
       const query = e.target.value.trim().toLowerCase();
-
-      const filtered = appsData.filter(app => {
-        return (
-          (app.title || "").toLowerCase().includes(query) ||
-          (app.description || "").toLowerCase().includes(query) ||
-          (app.category || "").toLowerCase().includes(query) ||
-          (app.url || "").toLowerCase().includes(query) ||
-          (app.repo || "").toLowerCase().includes(query) ||
-          (app.badge || []).join(" ").toLowerCase().includes(query)
-        );
-      });
-
+      const filtered = appsData.filter(app => 
+        app.title.toLowerCase().includes(query) || 
+        app.category.toLowerCase().includes(query) ||
+        app.description.toLowerCase().includes(query)
+      );
       renderApps(filtered);
     });
 
-    // =========================================================
-    // INIT
-    // =========================================================
     renderApps(appsData);
   </script>
 </body>
