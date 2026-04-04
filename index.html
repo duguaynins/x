@@ -1,541 +1,678 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" sizes="48x48" href="data:image/x-icon;base64,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">
-    <!--link rel="icon" type="image/x-icon" sizes="48x48" href="https://duguaynins-allninsone.hf.space/favicon.ico"-->
-    <!--link rel="icon" type="image/png" sizes="48x48" href="/favicon.png"-->
-    <!--link rel="shortcut icon" href="/favicon.ico"-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!">
-    <link rel="canonical" href="https://copyright.nins.cc/">
-    <title>nins/xLIFE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NINS / DOS Launcher</title>
 
-
-    <script>
-        
-    function generateRandomIntNumber(length) {
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            // 生成 0-9 的隨機數字
-            result += Math.floor(Math.random() * 10);
-        }
-        return result;
+  <style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-fg-dim: #4dbd74;
+      --dos-invert-bg: #00ff66;
+      --dos-invert-fg: #000000;
+      --dos-border: #00ff66;
+      --dos-warning: #ffffff;
+      --dos-warning-bg: #111111;
     }
 
-    function generateRandomAlphaString(length) {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        let result = "";
-        for (let i = 0; i < length; i++) {
-            result += chars[Math.floor(Math.random() * chars.length)];
-        }
-        return result;
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      text-shadow: 0 0 4px currentColor;
+      min-height: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 9999;
+      opacity: 0.18;
+    }
+
+    .screen_v0 {
+      position: relative;
+      z-index: 1;
+      padding: 12px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--dos-border);
+      background: rgba(0, 255, 102, 0.02);
+    }
+
+    .topbar,
+    .bottombar {
+      border: 1px solid var(--dos-border);
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .topbar-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: var(--dos-fg-soft);
+      font-size: 0.95rem;
+    }
+
+    .search-wrap {
+      border: 1px solid var(--dos-border);
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .prompt {
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    #search {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--dos-fg);
+      font: inherit;
+      font-size: 1rem;
+      text-shadow: 0 0 4px currentColor;
+    }
+
+    #search::placeholder {
+      color: var(--dos-fg-dim);
+      opacity: 1;
+    }
+
+    .hint {
+      color: var(--dos-fg-dim);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .feature-grid {
+      display: block;
+    }
+
+    .feature-category {
+      margin-bottom: 18px;
+    }
+
+    .feature-category h3 {
+      margin: 0 0 8px;
+      padding: 6px 8px;
+      border-top: 1px solid var(--dos-border);
+      border-bottom: 1px solid var(--dos-border);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      color: var(--dos-fg);
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .feature-item {
+      display: block;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .feature-item:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      border-color: var(--dos-invert-bg);
+    }
+
+    .feature-item:hover .app-url,
+    .feature-item:hover .app-meta,
+    .feature-item:hover .app-desc,
+    .feature-item:hover .feature-badge-inline {
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    .feature-item.notice {
+      color: var(--dos-warning);
+      background: var(--dos-warning-bg);
+      border: 1px solid #666;
+      cursor: default;
+      text-shadow: none;
+    }
+
+    .feature-item.notice:hover {
+      background: #222;
+      color: #fff;
+      border-color: #999;
+    }
+
+    .feature-item.notice:hover .app-url,
+    .feature-item.notice:hover .app-meta,
+    .feature-item.notice:hover .app-desc,
+    .feature-item.notice:hover .feature-badge-inline {
+      color: #fff;
+    }
+
+    .app-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+
+    .app-title {
+      font-weight: bold;
+      min-width: 180px;
+      white-space: nowrap;
+    }
+
+    .app-meta {
+      color: var(--dos-fg-soft);
+    }
+
+    .app-url {
+      color: #33ffaa;
+      word-break: break-all;
+    }
+
+    .app-desc {
+      margin-top: 4px;
+      color: var(--dos-fg-soft);
+      font-size: 0.95rem;
+      padding-left: 18px;
+      line-height: 1.4;
+    }
+
+    .feature-badge-inline {
+      color: #000;
+      background: var(--dos-fg);
+      padding: 1px 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-shadow: none;
+    }
+
+    .empty {
+      border: 1px dashed var(--dos-border);
+      padding: 12px;
+      color: var(--dos-fg-soft);
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-top: 6px;
+    }
+
+    .footer-links a {
+      color: var(--dos-fg);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--dos-fg);
+    }
+
+    .footer-links a:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    @media (max-width: 768px) {
+      .app-title {
+        min-width: 100%;
+      }
+
+      .app-desc {
+        padding-left: 0;
+      }
+
+      .topbar-line {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .search-wrap {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
     
-    const url = new URL(window.location.href);
-    /*
-    if (!url.searchParams.has("x")) {
-        url.searchParams.set("x", Date.now()); // 加入参数
-        window.location.href = url.toString(); // 重新载入
-    }  */
-    if (!url.searchParams.has("roomid")) {
-        url.searchParams.set("roomid", generateRandomIntNumber(9)); // 加入参数
-        window.location.href = url.toString(); // 重新载入
-    }  
-    </script>
-    <style>
-        :root { --bg: #f0f2f5; --primary: #0084ff; --gray: #e4e6eb; --yellow: #f5e025; --green: #3beb3e; --blue: #d5ebf7; }
-        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; height: 100vh; margin: 0; }
-        
-        /* 信令控制區 */
-        .controls { background: white; padding: 10px; border-bottom: 1px solid #ddd; display: flex; gap: 10px; align-items: center; }
-        button { padding: 3px 3px; cursor: pointer; }
-        
-        /* 聊天室主體 */
-        #chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; 
-    text-align: left; /* 確保文字靠左 */ gap: 10px; }
-        
-        /* 訊息氣泡 */
-        .msg { max-width: 70%; padding: 10px 15px; border-radius: 18px; word-break: break-all; font-size: 14px; line-height: 1.4; }
-        .msg.me { align-self: flex-end; background: var(--yellow); color: white; }
-        .msg.other { align-self: flex-start; background: var(--gray); color: black; }
-        
-        /* 即時輸入預覽 */
-        #remote-typing { 
-            align-self: flex-start; 
-            font-size: 12px; 
-            color: #888; 
-            /* margin-left: 10px; */
-            font-style: italic;
-            min-height: 1.2em;
-        }
+    .quick-search {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
 
-        /* 檔案卡片 */
-        .file-card { min-width: 200px; }
-        .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 3px; margin-top: 5px; }
-        .progress-bar { width: 0%; height: 100%; background: #4caf50; transition: width 0.2s; }
-        .download-btn { color: inherit; text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; }
+    .quick-btn {
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      padding: 6px 10px;
+      font: inherit;
+      cursor: pointer;
+      text-shadow: 0 0 4px currentColor;
+      transition: none;
+    }
 
-        /* 輸入區 */
-        .input-area { background: white; padding: 15px; display: flex; flex-direction: column; border-top: 1px solid #ddd; box-sizing: border-box; }
-        .input-row { display: flex; gap: 10px; align-items: center; box-sizing: border-box; }
-        input[type="text"] { /* flex: 1; border-radius: 20px; border: 1px solid #ddd; outline: none; */ padding: 10px; }
-    </style>
+    .quick-btn:hover,
+    .quick-btn.active {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    .quick-btn:focus {
+      outline: none;
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+  </style>
 </head>
 <body>
-<!-- UPDATE ================================================== -->
-<script src="https://copyright.nins.cc/children/0001/nins-update.js"></script>
-<!--script src="https://copyright.nins.cc/children/0001/nins-world.js"></script!-->
-<!--script src="https://copyright.nins.cc/children/0001/nins-ads.js"></script!-->
-<script src="https://copyright.nins.cc/children/0001/nins-abc.js"></script>
+  <div class="screen">
 
-
-
-
-  <div style="
-    position: fixed;
-    bottom: 0;
-    top: 0; /* 距離頂部 0 */
-    left: 0; /* 距離左側 0 */
-    right: 0; /* 距離右側 0 */
-    width: 100%;
-    background: #777777;
-    background: #FF3B00;
-    background: white;
-    color: white;
-    text-align: center;
-    /*padding: 10px;*/
-    box-sizing: border-box;
-    word-break: break-word;
-    z-index: 10000;
-    
-    display: flex;
-    flex-direction: column;
-  ">
-        <strong id="anything" style=""><b translate="no">© nins. </b>Use chat channels to easily start communicating with anyone.</strong>
-        <div id="title" style="" translate="no">
-        <div style="margin: 10px;" onclick="document.getElementById('DialogCheck').showModal();console.log(new Date().toLocaleString(), '🙉');">
-        nins/xFILE
-        </div></div>
-
-
-    <div class="controls" translate="no" style="justify-content: center;">
-        <button id="createOffer" style="display: none;">Offer</button>
-        <button id="handleSignaling" style="display: none;">Answer</button>
-        <small id="conn-status" style="color: red;">● Not connected</small>
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-line">
+        <div class="brand">© nins. / CHILDREN SYSTEM READY</div>
+        <div class="subtitle">Choose the abilities you need.</div>
+      </div>
     </div>
 
-
-<div id="content" style="background: #CCCCCC; width:100%; overflow:auto; flex:1; border: 1px solid #ccc; color: black;" translate="no">
-
-
-    <div id="chat-window"></div>
-    <div id="qrcode" style="
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    max-width: 100%; /* 給予一個最小高度，避免擠在一起 */
-    max-height: 100%; /* 給予一個最小高度，避免擠在一起 */
-    padding: 20px;"></div>
-
-
-</div>
-
-    <div id="remote-typing" translate="no" style="background: #eee; color: #888; width:100%;">LIVE></div>
-    <div class="input-btn-wrapper" style="display: flex; align-items: stretch; width:100%; text-align: center; padding: 0px; box-sizing: border-box;" translate="no">
-        <input type="file" id="fileInput" style="display: none;">
-        <button type="button" class="main use fat" translate="no" id="fileBtn" onclick="document.getElementById('fileInput').click()">📁<p translate="no" style="margin: 0; padding: 0; font-size: 1vh;" class="label">file</p></button><!--📎↩️!-->
-        <input  type="text"   class="main use fat" translate="no" id="textInput" name="url" autocomplete="off" placeholder="INPUT>" style="flex: 1; text-align: center;" list="list_msg"/>
-        <button type="button" class="main use fat" translate="no" id="sendBtn">🚀<p translate="no" style="margin: 0; padding: 0; font-size: 1vh;" class="label">enter</p></button>
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="prompt">SEARCH&gt;</div>
+      <input type="text" id="search" placeholder="app / category / url / keyword" />
     </div>
 
+    <div class="quick-search" id="quickSearch">
+      <button type="button" class="quick-btn" data-keyword="">[ALL]</button>
+      <button type="button" class="quick-btn" data-keyword="main">[MAIN]</button>
+      <button type="button" class="quick-btn" data-keyword="tools">[TOOLS]</button>
+      <button type="button" class="quick-btn" data-keyword="language">[LANGUAGE]</button>
+      <button type="button" class="quick-btn" data-keyword="feedback">[FEEDBACK]</button>
+      <button type="button" class="quick-btn" data-keyword="info">[INFO]</button>
+      <button type="button" class="quick-btn" data-keyword="beta">[BETA]</button>
+      <button type="button" class="quick-btn" data-keyword="star">[STAR]</button>
+      <button type="button" class="quick-btn" data-keyword="hot">[HOT]</button>
+      <button type="button" class="quick-btn" data-keyword="safe">[SAFE]</button>
+      <button type="button" class="quick-btn" data-keyword="url">[URL]</button>
+      <button type="button" class="quick-btn" data-keyword="qr">[QR]</button>
+    </div>
 
-        <!--strong></strong-->
-        <div id="notice" style="" translate="yes">
-        <div style="margin: 10px;" onclick="document.getElementById('DialogTrans').showModal();" id="notice">
-        By using any of the services, it means you have agreed to any content and all content!
-        </div></div>
-        <strong id="copyright" style="background-color: black; color: white; font-size: max(1vh,1vw);" translate="no">© 2024 NINS (by JPGT).</strong>
+    <div class="hint">
+      Search supports: <strong>title</strong>, <strong>description</strong>, <strong>category</strong>, <strong>url</strong>
+    </div>
+
+    <!-- App List -->
+    <div class="feature-grid" id="featureGrid"></div>
+
+    <!-- Bottom -->
+    <div class="bottombar">
+      <div>© 2024 NINS (by JPGT).</div>
+      <div class="footer-links">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?" target="_blank" rel="noopener noreferrer">nins/forms</a>
+        <a href="https://sites.google.com/view/duguaynins/" target="_blank" rel="noopener noreferrer">admins</a>
+      </div>
+    </div>
+
   </div>
-        
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
-    <script>
-        document.getElementById("fileBtn").disabled = true;
-        document.getElementById("textInput").disabled = true;
-        document.getElementById("sendBtn").disabled = true;
+  <script>
+    // =========================================================
+    // JSON DATA  ///⚠️ 
+    // =========================================================
+    const appsData = [
+      {
+        title: "Notice",
+        description: "By using any of the services, it means you have agreed to any content and all content!",
+        repo: null,
+        url: "",
+        category: "notice",
+        priority: 0,
+        badge: []
+      },
+      {
+        title: "nins/forms",
+        description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
+        repo: "google.forms",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?",
+        category: "feedback",
+        priority: 2,
+        badge: ["FORM"]
+      },
+      {
+        title: "nins/cospeaking",
+        description: "Romanized spelling for all languages.",
+        repo: "cospeaking",
+        url: "https://cospeaking.nins.cc",
+        category: "language",
+        priority: 1,
+        badge: ["HOT", "BETA"]
+      },
+      {
+        title: "nins/encoding",
+        description: "Enter content and get barcode.",
+        repo: "encoding",
+        url: "https://encoding.nins.cc",
+        category: "tools",
+        priority: 1,
+        badge: ["HOT", "BETA"]
+      },
+      {
+        title: "nins/decoding",
+        description: "Use the camera to decode a 2D code.",
+        repo: "decoding",
+        url: "https://decoding.nins.cc",
+        category: "tools",
+        priority: 1,
+        badge: ["HOT", "BETA"]
+      },
+      {
+        title: "nins/uris",
+        description: "Quickly create your own contact URL in HTTPS. Give a 'Vivre Card / Soul Paper' to everything that matters!",
+        repo: "uris",
+        url: "https://uris.nins.cc",
+        category: "main",
+        priority: 3,
+        badge: ["STAR"]
+      },
+      {
+        title: "nins/deurl",
+        description: "Check a link’s destination first, and don’t walk straight into trouble.",
+        repo: "deurl",
+        url: "https://deurl.nins.cc",
+        category: "main",
+        priority: 3,
+        badge: ["STAR", "SAFE"]
+      },
+      {
+        title: "nins/transing",
+        description: "Use chat channels to easily start communicating with anyone.",
+        repo: "transing",
+        url: "https://transing.nins.cc",
+        category: "main",
+        priority: 2,
+        badge: ["HOT", "STAR"]
+      },
+      {
+        title: "nins/follow",
+        description: "Interested in our latest app releases? We will send you a push notification.",
+        repo: null,
+        url: "custom-follow",
+        category: "info",
+        priority: 1,
+        badge: ["PUSH"]
+      },
+      {
+        title: "admins",
+        description: "Public co-founder.",
+        repo: null,
+        url: "https://sites.google.com/view/duguaynins/",
+        category: "info",
+        priority: 0,
+        badge: ["INFO"]
+      }
+    ];
 
-        // --- 設定區 ---
-        const params = new URLSearchParams(window.location.search);
-        ///const apikey = 'ijFBLQ.BEpg4g:yqcH3sGhgGO77S5mV4pAKFiaSYXo4DoqXSZfvXp2c6A'; // 請替換成你的 API Key
-        const userid = params.get("userid") || generateRandomAlphaString(128);
-        const roomid = params.get("roomid") || generateRandomIntNumber(9);
+    // =========================================================
+    // OPEN FUNCTIONS
+    // =========================================================
+    function openApp(repo, path="", dir="/children/", file="") {
+      if(!repo) return;
+      const href = "https://" + repo + ".nins.cc" + path;
+      window.open(href, "_blank", "noopener,noreferrer");
+    }
 
-        const qrcode = new QRCode(document.getElementById("qrcode"), {  ///有鏡頭的這邊後開並掃描
-            text: `https://x.nins.cc/?roomid=${roomid}`, // 這裡放入你的網址或文字
-            width: 256,
-            height: 256,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+    function openForm() {
+      const href = "https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?";
+      window.open(href, "_blank", "noopener,noreferrer");
+    }
+
+    function openFollow() {
+      try {
+        const subscription = (window.Cookies && Cookies.get("webpush")) || "";
+        const subscriptionJson = JSON.stringify(subscription);
+        const encodedSubscription = encodeURIComponent(subscriptionJson);
+        const href = `https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform?usp=pp_url&entry.1788803497=${encodedSubscription}`;
+        window.open(href, "_blank", "noopener,noreferrer");
+      } catch (err) {
+        const fallback = "https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform";
+        window.open(fallback, "_blank", "noopener,noreferrer");
+      }
+    }
+
+    function openByApp(app) {
+      if (app.title === "nins/forms") {
+        openForm();
+        return;
+      }
+
+      if (app.title === "nins/follow") {
+        openFollow();
+        return;
+      }
+
+      if (app.title === "admins" && app.url) {
+        window.open(app.url, "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      if (app.repo) {
+        openApp(app.repo, app.file ?? "", app.dir ?? "/children/");
+        return;
+      }
+
+      if (app.url && app.url.startsWith("http")) {
+        window.open(app.url, "_blank", "noopener,noreferrer");
+      }
+    }
+
+    // =========================================================
+    // RENDER
+    // =========================================================
+    const featureGrid = document.getElementById("featureGrid");
+
+    function createAppRow(app) {
+      const item = document.createElement("div");
+      item.classList.add("feature-item");
+      item.classList.add(app.category || "other");
+
+      if ((app.category || "").toLowerCase() === "notice") {
+        item.classList.add("notice");
+      }
+
+      const line = document.createElement("div");
+      line.classList.add("app-line");
+
+      const title = document.createElement("span");
+      title.classList.add("app-title");
+      title.textContent = `> ${app.title}`;
+
+      const category = document.createElement("span");
+      category.classList.add("app-meta");
+      category.textContent = `[${(app.category || "other").toUpperCase()}]`;
+
+      line.appendChild(title);
+      line.appendChild(category);
+
+      if (app.badge && app.badge.length) {
+        app.badge.forEach(tag => {
+          const badge = document.createElement("span");
+          badge.classList.add("feature-badge-inline");
+          badge.textContent = `[${tag}]`;
+          line.appendChild(badge);
         });
+      }
 
-        // 1. 初始化 Ably  ///:realtime/ably
-        const ably = new Ably.Realtime({ authUrl: 'https://duguaynins-ably.hf.space/auth', authMethod: 'POST', authHeaders: { 'clientId': userid, 'Beta': `TOEKN ${0}`, 'Authorization': `Bearer ${0}` } });
-        /* 
-        const ably = new Ably.Realtime({
-            key: apikey,
-            clientId: userid
-        });  */
+      if (app.url) {
+        const urlSpan = document.createElement("span");
+        urlSpan.classList.add("app-url");
 
-        // 2. 取得一個頻道 (Channel)
-        const channel = ably.channels.get( roomid );
+        if (app.url === "custom-follow") {
+          urlSpan.textContent = "https://docs.google.com/forms/.../follow";
+        } else {
+          urlSpan.textContent = app.url;
+        }
 
-        ///const logElement = document.getElementById('log');
-        const statusElement = document.getElementById('conn-status');
+        line.appendChild(urlSpan);
+      }
 
-        // 監測連線狀態
-        ably.connection.on('connected', () => {
-            statusElement.innerText = '● Waiting';
-            statusElement.style.color = 'orange';
+      item.appendChild(line);
+
+      if (app.description) {
+        const desc = document.createElement("div");
+        desc.classList.add("app-desc");
+        desc.textContent = app.description;
+        item.appendChild(desc);
+      }
+
+      const isClickable =
+        app.repo ||
+        app.title === "nins/forms" ||
+        app.title === "nins/follow" ||
+        (app.url && app.url.startsWith("http"));
+
+      if (isClickable && (app.category || "").toLowerCase() !== "notice") {
+        item.addEventListener("click", () => openByApp(app));
+      } else {
+        item.style.cursor = "default";
+      }
+
+      return item;
+    }
+
+    function renderApps(data) {
+      featureGrid.innerHTML = "";
+
+      if (!data.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "NO MATCH FOUND. Try app name, category, url, or keyword.";
+        featureGrid.appendChild(empty);
+        return;
+      }
+
+      const sorted = [...data].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+
+      const categories = {};
+      sorted.forEach(app => {
+        const cat = app.category || "other";
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(app);
+      });
+
+      const categoryOrder = ["notice", "main", "tools", "language", "feedback", "info", "other"];
+
+      Object.keys(categories)
+        .sort((a, b) => {
+          const ia = categoryOrder.indexOf(a);
+          const ib = categoryOrder.indexOf(b);
+          return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+        })
+        .forEach(cat => {
+          const section = document.createElement("div");
+          section.classList.add("feature-category");
+
+          const title = document.createElement("h3");
+          title.textContent = `[ ${cat.toUpperCase()} ]`;
+          section.appendChild(title);
+
+          categories[cat].forEach(app => {
+            section.appendChild(createAppRow(app));
+          });
+
+          featureGrid.appendChild(section);
         });
+    }
 
-        // 3. 訂閱訊息 (Subscribe)
-        channel.presence.enter({});  ///webRTC
-        /*
-        channel.subscribe('test-event', (message) => {  });
-        channel.subscribe((message) => {
-            const newMessage = document.createElement('p');
-            newMessage.textContent = `[${message.clientId}]: ${message.data}`;
-            logElement.appendChild(newMessage);
-            logElement.scrollTop = logElement.scrollHeight; // 自動捲動到底部
-        });  */
+    // =========================================================
+    // SEARCH
+    // =========================================================
+    const searchInput = document.getElementById("search");  ///NEW***
+    const quickButtons = document.querySelectorAll(".quick-btn");
 
-        // 4. 發送訊息函數 (Publish)
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value;
-            
-            if (text.trim() !== "") {
-                channel.publish('test-event', text);
-                input.value = ''; // 清空輸入框
-            }
-        }
+    quickButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const keyword = btn.dataset.keyword || "";
+        searchInput.value = keyword;
 
-        // 監聽 Presence 變動（有人進、有人出、有人更新）
-        let frist = null;
-        channel.presence.subscribe((member) => {
-            // 💡 每次狀態變動，我們就去「抓取」完整的成員清單
-            channel.presence.get((err, members) => {
-                if (err) {
-                    console.error("[SYSTEM] error:", err);
-                    return;
-                }
+        // 觸發 input 事件，沿用原本搜尋邏輯
+        searchInput.dispatchEvent(new Event("input"));
 
-                const totalUsers = members.length; // 這裡就是總人數！
-                console.log(`[SYSTEM] members.length: ${totalUsers}`);
-                console.log(`[SYSTEM] member.action: ${member.action} (member.clientId: ${member.clientId})`);
-                console.log(`[SYSTEM] member.data: ${JSON.stringify(member.data)}`);
-                if (member.action==="leave") { ably.close();return; }  ///讓第二個接續一起退出***
+        searchInput.focus();
+      });
+    });  ///NEW***
 
-                // 判斷是否湊齊兩人
-                if (frist===null) {
-                    if (member.action==="enter") { frist = true; }
-                    if (member.action==="present") { frist = false; }
-                    if (frist===true) {
-                        setupOfferSDP();
-                    }
-                    console.log(frist);
-                }
-                
-                if (true) {
-                    if (frist && member.data?.SDP?.type==="answer") { 
-                        console.log("frist");
-                        setupAnswerSDP(member.data.SDP);
-                    } else if (!frist && member.data?.SDP?.type==="offer") { 
-                        console.log("!frist");
-                        setupAnswerSDP(member.data.SDP);
-                    } else {  }
-                }    
-            });
-        });
-    </script>
+    document.getElementById("search").addEventListener("input", e => {
+      const query = e.target.value.trim().toLowerCase();
 
+      const filtered = appsData.filter(app => {
+        return (
+          (app.title || "").toLowerCase().includes(query) ||
+          (app.description || "").toLowerCase().includes(query) ||
+          (app.category || "").toLowerCase().includes(query) ||
+          (app.url || "").toLowerCase().includes(query) ||
+          (app.repo || "").toLowerCase().includes(query) ||
+          (app.badge || []).join(" ").toLowerCase().includes(query)
+        );
+      });
 
-    <script>
-        const chatWindow = document.getElementById("chat-window");
-        const textInput = document.getElementById("textInput");
-        const fileInput = document.getElementById("fileInput");
-        const remoteTyping = document.getElementById("remote-typing");
-        const connStatus = document.getElementById("conn-status");
+      renderApps(filtered);
+    });
 
-        let pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
-        let dataChannel;
-        let incomingFiles = {};
-        let localDescription = {};
-
-        function appendMsg(content, isMe, type = 'text', fileId = null) {
-            
-            const [utc, offset] = updateTime();
-            const ninsTimes = utc + offset;
-            
-            const randomID = "id_" + Math.random().toString(36).substring(2, 8);
-            const msgTime = ("🕛️" + ninsTimes);
-            
-            const openai = `https://chatgpt.com/?prompt=` + encodeURIComponent( content );
-            const google = `https://www.google.com/search?udm=50&aep=1&aic=0&hl=auto&q=` + encodeURIComponent( content );
-            const perple = `https://www.perplexity.ai/?q=` + encodeURIComponent( content );   ///xmsg or prompt
-            
-            const div = document.createElement("div");
-            div.className = `msg ${isMe ? 'me' : 'other'}`;
-            if (type === 'text') {
-                ///div.innerText = content;  ///📄📑
-                div.innerHTML = `
-                <div class="text-card" id="text-${randomID}">
-                    <!--span id="${randomID}_T" style="" translate="no">${msgTime}</span><br!-->
-                    
-                    <span style="">
-                        <label id="AI_oa" translate="no" style="color:black;"> <a translate="no" style="text-decoration: none;" target="_blank" rel="noopener noreferrer" href="${openai}">🧠AI:O</a> </label>
-                        <label id="AI_gg" translate="no" style="color:black;"> <a translate="no" style="text-decoration: none;" target="_blank" rel="noopener noreferrer" href="${google}">♊AI:G</a> </label>
-                        <label id="AI_pp" translate="no" style="color:black;"> <a translate="no" style="text-decoration: none;" target="_blank" rel="noopener noreferrer" href="${perple}">🕸️AI:P</a> </label>
-                        <!--label id="OL_tg" translate="no" onclick="selectReplyid('text-${randomID}')">⬅️</label!-->
-                    </span>
-                    <span>📑${content}</span>
-
-                </div>`;
-            } else {
-                div.innerHTML = `
-                <div class="file-card" id="file-${fileId}">
-                    <!--span id="${randomID}_T" style="" translate="no">${msgTime}</span><br!-->
-                    
-                    <a class="download-btn">📑${content}</a>
-                    <div class="progress-container">
-                        <div class="progress-bar"></div>
-                    </div>
-
-                </div>`;
-            }
-            chatWindow.appendChild(div);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-            return div;
-        }
-
-        function markDisconnected(reason = "") {
-                connStatus.innerText = "● End";
-                connStatus.style.color = "gray";
-                document.getElementById("content").style.background = "#777777";
-                document.getElementById("fileBtn").disabled = true;
-                document.getElementById("textInput").disabled = true;
-                document.getElementById("sendBtn").disabled = true;
-        }
-
-        function markConnected(reason = "") {
-                connStatus.innerText = "● Start";
-                connStatus.style.color = "green";
-                document.getElementById("content").style.background = "#eeeeee";
-                document.getElementById("fileBtn").disabled = false;
-                document.getElementById("textInput").disabled = false;
-                document.getElementById("sendBtn").disabled = false;
-        }
-
-        function setupPeerConnection(pc) {
-            pc.onconnectionstatechange = () => {
-                console.log("PC connectionState:", pc.connectionState);
-                if (pc.connectionState === "connected") { document.getElementById("qrcode").style.display = "none"; }
-                if (
-                    pc.connectionState === "disconnected" ||
-                    pc.connectionState === "failed" ||
-                    pc.connectionState === "closed"
-                ) {
-                    markDisconnected("connectionState " + pc.connectionState);
-                }
-            };
-
-            pc.oniceconnectionstatechange = () => {
-                console.log("PC iceConnectionState:", pc.iceConnectionState);
-                if (pc.iceConnectionState === "connected") { document.getElementById("qrcode").style.display = "none"; }
-                if (
-                    pc.iceConnectionState === "disconnected" ||
-                    pc.iceConnectionState === "failed" ||
-                    pc.iceConnectionState === "closed"
-                ) {
-                    markDisconnected("iceConnectionState " + pc.iceConnectionState);
-                }
-            };
-        }
-        
-        setupPeerConnection(pc);
-
-        function setupDataChannel(channel) {
-            dataChannel = channel;
-            dataChannel.binaryType = 'arraybuffer';
-
-            ///dataChannel.readyState = () => {  };
-            dataChannel.onclose = () => {  
-                connStatus.innerText = "● Disconnected";
-                connStatus.style.color = "red";
-                markDisconnected();
-            };
-            dataChannel.onerror = () => {  
-                connStatus.innerText = "● Error";
-                connStatus.style.color = "red";
-                markDisconnected();
-            };
-
-            dataChannel.onopen = () => {
-                connStatus.innerText = "● Connected";
-                connStatus.style.color = "green";
-                markConnected();
-            };
-
-            dataChannel.onmessage = (event) => {
-                if (typeof event.data === 'string') {
-                    const msg = JSON.parse(event.data);
-                    
-                    // 關鍵功能：處理即時打字預覽
-                    if (msg.type === 'typing') {
-                        remoteTyping.innerText = msg.data ? `LIVE> ${msg.data}` : "LIVE>";
-                    } 
-                    else if (msg.type === 'chat') {
-                        remoteTyping.innerText = "LIVE>"; // 送出後清空預覽
-                        appendMsg(msg.data, false);
-                    } 
-                    else if (msg.type === 'file-start') {
-                        const { id, name, size } = msg;
-                        incomingFiles[id] = { name, size, buffer: [], received: 0 };
-                        appendMsg(name, false, 'file', id);
-                    }
-                    return;
-                }
-
-                // 檔案傳輸邏輯
-                const lastId = Object.keys(incomingFiles).pop();
-                const fileTask = incomingFiles[lastId];
-                if (fileTask) {
-                    fileTask.buffer.push(event.data);
-                    fileTask.received += event.data.byteLength;
-                    const percent = (fileTask.received / fileTask.size) * 100;
-                    const el = document.getElementById(`file-${lastId}`);
-                    if (el) el.querySelector(".progress-bar").style.width = percent + "%";
-
-                    if (fileTask.received >= fileTask.size) {
-                        const blob = new Blob(fileTask.buffer);
-                        const link = el.querySelector(".download-btn");
-                        link.href = URL.createObjectURL(blob);
-                        link.download = fileTask.name;
-                        link.style.display = "block";
-                        link.style.color = "blue";
-                        ///link.innerText = "💾";  ///💾🎁
-                        delete incomingFiles[lastId];
-                    }
-                }
-            };
-        }
-
-        
-        /*
-        document.addEventListener('click', async function (e) {
-            await setupOfferSDP();
-        }, { once: true });  */
-
-
-        // WebRTC 信令流程 (Offer/Answer)
-        async function setupOfferSDP(inputs=null) {
-            setupDataChannel(pc.createDataChannel("chat-room"));
-            if (true) {
-                const offer = await pc.createOffer();
-                await pc.setLocalDescription(offer);
-                setTimeout(async () => {
-                    ///prompt("Offer SDP:", JSON.stringify(pc.localDescription) );  ///發起人
-                    localDescription = pc.localDescription;
-                    ///channel.presence.enter({ SDP: localDescription });
-                    await channel.presence.update({ SDP: localDescription });
-                }, 500);  ///alert
-            }
-        }
-        async function setupAnswerSDP(inputs=null) {
-            ///const inputs = prompt("請貼上對方的 SDP:");
-            ///if (!inputs) return;
-            ///const sdp = JSON.parse(inputs);
-
-            const sdp = inputs;
-            await pc.setRemoteDescription(sdp);
-            if (sdp.type === "offer") {
-                const answer = await pc.createAnswer();
-                await pc.setLocalDescription(answer);
-                setTimeout(async () => {
-                    ///prompt("Answer SDP:", JSON.stringify(pc.localDescription) );  ///被動人
-                    localDescription = pc.localDescription;
-                    ///channel.presence.enter({ SDP: localDescription });
-                    await channel.presence.update({ SDP: localDescription });
-
-                    ///channel.detach(); // 或 close / leave
-                    setTimeout(() => {
-                        ably.close();
-                    }, 2000); // Waits 2 seconds
-                }, 500);  ///alert
-            }
-        }
-
-        ///可以等待ABLY完成連線後再進行
-        ///雙方先取得完整的SDP再交換
-        pc.ondatachannel = (e) => setupDataChannel(e.channel);
-        pc.onicecandidate = (e) => { if(e.candidate) console.log("ICE Candidate updated"); };
-
-        document.getElementById("createOffer").onclick = async () => {
-            await setupOfferSDP();
-        };
-        document.getElementById("handleSignaling").onclick = async () => {
-            await setupAnswerSDP();
-        };
-
-        // --- 核心邏輯：監聽輸入事件 ---
-        textInput.addEventListener("input", () => {
-            if (dataChannel && dataChannel.readyState === "open") {
-                dataChannel.send(JSON.stringify({
-                    type: 'typing',
-                    data: textInput.value
-                }));
-            }
-        });
-        
-        function sendText() {
-            const val = textInput.value;
-            if (!val || !dataChannel) return;
-            dataChannel.send(JSON.stringify({ type: 'chat', data: val }));
-            dataChannel.send(JSON.stringify({ type: 'typing', data: "" })); // 送出後清空對方的預覽
-            appendMsg(val, true);
-            textInput.value = "";
-        }
-
-        document.getElementById("sendBtn").onclick = sendText;
-        textInput.onkeypress = (e) => { if(e.key === 'Enter') sendText(); };
-
-        // 檔案發送 (保留進度)
-        fileInput.onchange = () => {
-            const file = fileInput.files[0];
-            if (!file || !dataChannel) return;
-            const fileId = Date.now();
-            appendMsg(file.name, true, 'file', fileId);
-            dataChannel.send(JSON.stringify({ type: 'file-start', id: fileId, name: file.name, size: file.size }));
-            
-            const chunkSize = 16384;
-            let offset = 0;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                dataChannel.send(e.target.result);
-                offset += e.target.result.byteLength;
-                const el = document.getElementById(`file-${fileId}`);
-                if (el) el.querySelector(".progress-bar").style.width = (offset / file.size) * 100 + "%";
-                if (offset < file.size) readNext();
-            };
-            const readNext = () => reader.readAsArrayBuffer(file.slice(offset, offset + chunkSize));
-            readNext();
-            fileInput.value = "";
-        };
-    </script>
+    // =========================================================
+    // INIT
+    // =========================================================
+    renderApps(appsData);
+  </script>
 </body>
 </html>
