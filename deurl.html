@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head translate="yes">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!">
+  <link rel="canonical" href="https://copyright.nins.cc/">
+  <title translate="no">nins/deurl.sys</title>
+
+  <style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-fg-dim: #4dbd74;
+      --dos-invert-bg: #00ff66;
+      --dos-invert-fg: #000000;
+      --dos-border: #00ff66;
+      --danger: #ff5555;
+      --warn: #ffff66;
+      --crt-flicker: flicker 0.15s infinite;
+    }
+
+    * { box-sizing: border-box; }
+
+    @keyframes flicker {
+      0% { opacity: 0.97; }
+      5% { opacity: 0.99; }
+      10% { opacity: 0.98; }
+      100% { opacity: 0.99; }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      text-shadow: 0 0 4px currentColor;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 9999;
+      opacity: 0.18;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--dos-border);
+      background: rgba(0, 255, 102, 0.02);
+      display: flex;
+      flex-direction: column;
+      animation: var(--crt-flicker);
+      gap: 12px;
+    }
+
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 12px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .topbar {
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-bottom: 2px solid var(--dos-border);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .muted { color: var(--dos-fg-dim); }
+    .soft { color: var(--dos-fg-soft); }
+    .danger { color: var(--danger); }
+    .warn { color: var(--warn); }
+
+    .menu, .input-row, .shortcut-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button, input[type="text"], a.shortcut-link {
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      padding: 10px 14px;
+      font: inherit;
+      text-transform: uppercase;
+      text-decoration: none;
+      outline: none;
+      min-height: 44px;
+    }
+
+    button, a.shortcut-link { cursor: pointer; }
+
+    button:hover, button:focus, input[type="text"]:focus, a.shortcut-link:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      text-transform: none;
+      min-width: 260px;
+    }
+
+    #content {
+      user-select: text;
+      flex: 1;
+      overflow-y: auto;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    #content a {
+      color: var(--dos-fg-soft);
+    }
+
+    .status-bar {
+      font-size: 0.85rem;
+      color: var(--dos-fg-dim);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    dialog {
+      background: #000;
+      color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      width: min(720px, calc(100vw - 24px));
+    }
+
+    dialog::backdrop { background: rgba(0,0,0,0.7); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    .hidden { display: none !important; }
+    .line { margin: 4px 0; }
+    .pill { border: 1px solid var(--dos-border); padding: 6px 10px; }
+  </style>
+</head>
+<body>
+<!--script src="https://copyright.nins.cc/children/0001/nins-update.js"></script!-->
+
+<div class="screen">
+  <div class="topbar dos-block">
+    <span>© NINS / DEURL.SYS [VERSION 2026.04.04]</span>
+    <span class="soft">ZERO-TRUST URL INSPECTOR</span>
+  </div>
+
+  <div class="dos-block muted">CHECK A LINK'S DESTINATION BEFORE ENTERING UNKNOWN TERRITORY.</div>
+
+  <div class="menu dos-block">
+    <button type="button" class="use" onclick="document.getElementById('input_qr').click();">[ F1 ] LOAD IMAGE</button>
+    <button type="button" class="use" onclick="send()">[ F2 ] ANALYZE URL</button>
+    <button type="button" class="use" onclick="document.getElementById('DialogCheck').showModal();">[ F3 ] LOG</button>
+    <button type="button" class="use" onclick="document.getElementById('DialogTrans').showModal();">[ F4 ] LANG</button>
+    <input type="file" id="input_qr" class="hidden" accept="image/*">
+    <canvas id="canvas_qr" class="hidden"></canvas>
+  </div>
+
+  <div id="content" class="dos-block">SYSTEM READY.\n\n1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.\n2. RUN ANALYSIS.\n3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</div>
+
+  <div id="url-slider" class="dos-block shortcut-row"></div>
+
+  <div class="dos-block input-row">
+    <button type="button" class="use" onclick="send()">RUN</button>
+    <input id="input_msg" type="text" name="url" autocomplete="off" placeholder="HTTPS://GOOGLE.COM/" />
+    <button type="button" class="use" onclick="send()">EXEC</button>
+  </div>
+
+  <div class="dos-block muted">BY SENDING A MESSAGE TO THIS SERVICE, YOU AGREE TO ANY CONTENT AND ALL CONTENT.</div>
+
+  <div class="status-bar">
+    <span>LOCATION: C:\\NINS\\NET\\DEURL</span>
+    <span id="statusText">STATUS: READY</span>
+  </div>
+</div>
+
+<dialog id="DialogTrans" translate="no">
+  <div id="google_translate_element" style="display:block;"></div><br>
+  <button style="width: 100%;" onclick="document.getElementById('DialogTrans').close();">[ ESC ] BACK</button>
+</dialog>
+
+<dialog id="DialogCheck" translate="no">
+  <pre id="logOutput" style="max-height:200px; overflow:auto; margin:0;"></pre><br>
+  <button style="width: 100%;" onclick="document.getElementById('DialogCheck').close();">[ ESC ] BACK</button>
+</dialog>
+
+<script>
+const urls = [
+  "https://",
+  "https://google.com/",
+  "https://www.fclnews.com/",
+  "https://bump.oen.tw/",
+  "https://dumbmoney.tw/",
+  "https://bit.ly/4dYnhfP",
+  "https://ctbc.tw/0DIoEU",
+  "https://ctbc.tw/bsYlnz",
+  "https://ctbc.tw/rukJKu",
+  "https://pse.is/7s3wr8",
+  "https://t.me/",
+];
+
+const container = document.getElementById('url-slider');
+const statusText = document.getElementById('statusText');
+const content = document.getElementById('content');
+
+function setStatus(text) { statusText.textContent = `STATUS: ${text}`; }
+function terminalPrint(html) { content.innerHTML = html; }
+
+urls.forEach(url => {
+  const btn = document.createElement('button');
+  btn.textContent = url;
+  btn.className = 'use';
+  btn.onclick = () => {
+    document.getElementById('input_msg').value = url;
+    send();
+  };
+  container.appendChild(btn);
+});
+
+const reportBtn = document.createElement('button');
+reportBtn.textContent = '[ REPORT PHISH ]';
+reportBtn.className = 'use';
+reportBtn.onclick = () => window.open('https://safebrowsing.google.com/safebrowsing/report_phish/', '_blank', 'noopener,noreferrer');
+container.appendChild(reportBtn);
+</script>
+
+<script>
+async function HuggingFaceAPI(inputs=null) {
+  try {
+    const { group, space, path, payload } = inputs;
+    const baseUrl = `https://${group}-${space}.hf.space/${path}`;
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return {result: {confidences: null, label: `<a translate="no" href="mailto:duguaynins@gmail.com?subject=${encodeURIComponent(new Date().toISOString())}&body=${encodeURIComponent(err.stack)}">MAIL SUPPORT</a>` }};
+  }
+}
+
+async function deurl(params) {
+  const { url } = params;
+  if (!url) { document.getElementById("input_msg").value = "https://2025.deurl.nins.cc/"; return "???"; }
+  const outputs = await HuggingFaceAPI({
+    group: "duguaynins",
+    space: "RedirectAPI",
+    path: "decode/url",
+    payload: { inputs: url },
+  });
+  return outputs.result;
+}
+
+let stopFlag = null;
+let okFlag = false;
+
+function recheck(url) {
+  try { new URL(url); return false; } catch (e) { return true; }
+}
+
+async function send() {
+  document.getElementById("input_msg").value = document.getElementById("input_msg").value.trim();
+  terminalPrint(`<div class="line">> INITIALIZING LINK TRACE...</div><div class="line soft">> CONTACTING ANALYSIS ENGINES...</div>`);
+  setStatus('WORKING');
+
+  const url = document.getElementById("input_msg").value;
+  if (recheck(url)) {
+    terminalPrint(`<div class="danger">ERROR: INVALID URL FORMAT</div><div class="line">EXPECTED: HTTPS://EXAMPLE.COM/</div><div class="line soft">INPUT: ${url || '(EMPTY)'}</div>`);
+    setStatus('INPUT ERROR');
+    return;
+  }
+
+  stopFlag = true;
+  document.getElementById("input_qr").disabled = true;
+  document.getElementById("input_msg").disabled = true;
+  document.querySelectorAll('button').forEach(button => { button.disabled = true; });
+
+  const lang = `${(navigator.language || navigator.userLanguage || "en-US")}. Content generation uses this language`;
+  const task = `Carefully infomatoion Security Analysis for URLs`;
+  const need = `URL is safe(🟢/🔴) ? Shows the recommended degrees of caution "(🟢/🔴)" when operating under zero-trust. Who provided the prompt. Check the domain owner and review the website content`;
+
+  const msg = await deurl({ url });
+  const rdap_in = `https://rdap.org/domain/${encodeURIComponent(getDomain(url))}`;
+  const refer_in = await deurl({ url: rdap_in });
+
+  const bynins = `This is the result of a URL redirect analysis. The analysis technology prompt is provided by "nins.cc"`;
+  const risk = "https://safebrowsing.google.com/safebrowsing/report_phish/";
+  const hint = "Users are advised to avoid using any unknown links";
+
+  const prompt = `notice=${bynins}!\n---\nlang=${lang}.\ntask=${task}.\nneed=${need}.\nsumbit=${risk}.\nalarm=${hint}.\n---\ninput=${url}.\n---\nrdap=${refer_in}.\n---\nhtml=${msg}.\n---\nnotice=${bynins}!`;
+  const openai = `https://chatgpt.com/?prompt=` + encodeURIComponent(prompt);
+  const google = `https://www.google.com/search?udm=50&aep=1&aic=0&hl=${lang}&q=` + encodeURIComponent(prompt);
+
+  terminalPrint(`
+    <div class="line success">> TRACE COMPLETE</div>
+    <div class="line">INPUT: <span class="soft">${url}</span></div>
+    <div class="line">NEXT STEP: OPEN REPORT GENERATOR</div>
+    <br>
+    <div class="line">[1] <a target="_blank" rel="noopener noreferrer" href="${openai}">CHATGPT REPORT</a></div>
+    <div class="line">[2] <a target="_blank" rel="noopener noreferrer" href="${google}">GEMINI REPORT</a></div>
+    <br>
+    <div class="line muted">AUTO-REDIRECT TO REPORT WILL START IN 2 SECONDS...</div>
+  `);
+
+  document.querySelectorAll('button').forEach(button => { button.disabled = false; });
+  document.getElementById("input_msg").disabled = false;
+  document.getElementById("input_qr").disabled = false;
+
+  stopFlag = false;
+  okFlag = true;
+  setStatus('READY');
+
+  setTimeout(function() {
+    window.location.href = google;
+  }, 2000);
+}
+
+document.getElementById("input_msg").addEventListener("focus", (event) => {
+  if (stopFlag || okFlag) return;
+  terminalPrint(`> READY FOR INPUT...`);
+  setStatus('INPUT');
+});
+
+document.getElementById("input_msg").addEventListener("blur", () => {
+  if (stopFlag || okFlag) return;
+  terminalPrint(`> YOU MAY ALSO LOAD A QR / BARCODE IMAGE.`);
+  setStatus('READY');
+});
+
+document.getElementById("input_msg").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    send();
+  }
+});
+</script>
+
+<script>
+const placeholders = [
+  "HTTPS://GOOGLE.COM/",
+  "HTTPS://NINS.CC/",
+];
+let index = 0;
+const input = document.getElementById("input_msg");
+setInterval(() => {
+  input.placeholder = placeholders[index];
+  index = (index + 1) % placeholders.length;
+}, 3000);
+</script>
+
+<script src="https://copyright.nins.cc/children/0001/jsQR.min.js"></script>
+<script>
+document.getElementById('input_qr').addEventListener('change', function(e) {
+  const canvas = document.getElementById('canvas_qr');
+  const ctx = canvas.getContext('2d');
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = function() {
+      terminalPrint(`> IMAGE RECEIVED... DECODING...`);
+      setStatus('SCANNING');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0, img.width, img.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (code) {
+        terminalPrint(`> SCAN COMPLETE\n> QR CODE FOUND\n> PAYLOAD: <span class="soft">${code.data}</span>`);
+        document.getElementById('input_msg').value = code.data;
+        send();
+      } else {
+        terminalPrint(`<div class="danger">ERROR: NO VALID QR / BARCODE DETECTED.</div><div class="line">TRY A CLEARER IMAGE.</div>`);
+        document.getElementById('input_msg').value = "***";
+        setStatus('SCAN ERROR');
+      }
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/tldts@7.0.19/dist/index.umd.min.js"></script>
+<script>
+function getHostname(url) {
+  if (!/^https?:\/\//i.test(url)) return null;
+  return new URL(url).hostname;
+}
+
+function getDomain(url) {
+  if (!/^https?:\/\//i.test(url)) return null;
+  return tldts.getDomain(url);
+}
+
+function UserReady() {
+  const params = new URLSearchParams(window.location.search);
+  document.getElementById("input_msg").value = params.get("data");
+  if (!params.get("data")) return;
+  setTimeout(function () { send() }, 2200);
+}
+
+document.addEventListener('click', function handler(event) {
+  if (event.target.tagName === 'BUTTON') {
+    UserReady();
+  }
+}, { once: true });
+</script>
+</body>
+</html>
