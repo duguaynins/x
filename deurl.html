@@ -183,10 +183,10 @@
   </div>
 
   <!--div id="content" class="dos-block">SYSTEM READY.\n\n1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.\n2. RUN ANALYSIS.\n3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</div!--> 
-  <div id="content" class="dos-block">> 
-    1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.<br>
-    2. RUN ANALYSIS.<br>
-    3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.
+  <div id="content" class="dos-block">>
+    <span>[ F1 ] ENTER A URL OR LOAD A QR / BARCODE IMAGE.</span>
+    <span>[ F2 ] RUN ANALYSIS.</span>
+    <span>[ F3 ] OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</span>
   </div>
   <div id="url-slider" class="dos-block shortcut-row"></div>
 
@@ -331,7 +331,8 @@ async function send() {
   const google = `https://www.google.com/search?udm=50&aep=1&aic=0&hl=${lang}&q=` + encodeURIComponent(prompt);
 
   terminalPrint(`> ${url}
-    <div class="line soft">[1] <a target="_blank" rel="noopener noreferrer" href="${openai}">CHATGPT REPORT</a></div> <div class="line soft">[2] <a target="_blank" rel="noopener noreferrer" href="${google}">GEMINI REPORT</a></div>
+    <span class="line soft">[ F3 ] <a target="_blank" rel="noopener noreferrer" href="${openai}">CHATGPT REPORT</a></span> 
+    <span class="line soft">[ F3 ] <a target="_blank" rel="noopener noreferrer" href="${google}">GEMINI REPORT</a></span>
   `);
 
   document.querySelectorAll('button').forEach(button => { button.disabled = false; });
