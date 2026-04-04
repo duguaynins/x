@@ -589,7 +589,7 @@
         const content = doc.body.innerHTML;
 
         // 放入 SPA 內的容器
-        document.getElementById('main-content').innerHTML = content;
+        document.querySelector('.screen').innerHTML = doc.querySelector('.screen');
 
         // 改變 URL（不 reload）
         history.pushState({ page: url }, '', '/' + url.split('/').pop());
