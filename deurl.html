@@ -3,7 +3,7 @@
 <head translate="yes">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="© 2024 NINS (by JPGT).">
+  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!">
   <link rel="canonical" href="https://copyright.nins.cc/">
   <title translate="no">nins/deurl.sys</title>
 
@@ -272,6 +272,14 @@ function terminalPrint(html) { content.innerHTML = html; }
   }
 }*/
 
+
+const reportBtn = document.createElement('button');
+reportBtn.textContent = '[ REPORT PHISH ]';
+reportBtn.className = 'use';
+reportBtn.style.color = 'red';
+reportBtn.onclick = () => window.open('https://safebrowsing.google.com/safebrowsing/report_phish/', '_blank', 'noopener,noreferrer');
+container.appendChild(reportBtn);
+
 urls.forEach(url => {
   const btn = document.createElement('button');
   btn.textContent = url;
@@ -282,12 +290,6 @@ urls.forEach(url => {
   };
   container.appendChild(btn);
 });
-
-const reportBtn = document.createElement('button');
-reportBtn.textContent = '[ REPORT PHISH ]';
-reportBtn.className = 'use';
-reportBtn.onclick = () => window.open('https://safebrowsing.google.com/safebrowsing/report_phish/', '_blank', 'noopener,noreferrer');
-container.appendChild(reportBtn);
 </script>
 
 <script>
