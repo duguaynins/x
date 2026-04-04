@@ -176,14 +176,18 @@
   <div class="menu dos-block">
     <button type="button" class="use" onclick="document.getElementById('input_qr').click();">[ F1 ] LOAD IMAGE</button>
     <button type="button" class="use" onclick="send()">[ F2 ] ANALYZE URL</button>
-    <button type="button" class="use" onclick="document.getElementById('DialogCheck').showModal();">[ F3 ] LOG</button>
-    <button type="button" class="use" onclick="document.getElementById('DialogTrans').showModal();">[ F4 ] LANG</button>
+    <!--button type="button" class="use" onclick="document.getElementById('DialogCheck').showModal();">[ F3 ] LOG</button>
+    <button type="button" class="use" onclick="document.getElementById('DialogTrans').showModal();">[ F4 ] LANG</button!-->
     <input type="file" id="input_qr" class="hidden" accept="image/*">
     <canvas id="canvas_qr" class="hidden"></canvas>
   </div>
 
-  <div id="content" class="dos-block">SYSTEM READY.\n\n1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.\n2. RUN ANALYSIS.\n3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</div>
-
+  <!--div id="content" class="dos-block">SYSTEM READY.\n\n1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.\n2. RUN ANALYSIS.\n3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.</div!--> 
+  <div id="content" class="dos-block">> 
+    1. ENTER A URL OR LOAD A QR / BARCODE IMAGE.<br>
+    2. RUN ANALYSIS.<br>
+    3. OPEN THE GENERATED REPORT IN YOUR PREFERRED AI.
+  </div>
   <div id="url-slider" class="dos-block shortcut-row"></div>
 
   <div class="dos-block input-row">
@@ -231,6 +235,13 @@ const content = document.getElementById('content');
 
 function setStatus(text) { statusText.textContent = `STATUS: ${text}`; }
 function terminalPrint(html) { content.innerHTML = html; }
+/*function terminalPrint(text, asHtml = false) {
+  if (asHtml) {
+    content.innerHTML = text;
+  } else {
+    content.textContent = text;
+  }
+}*/
 
 urls.forEach(url => {
   const btn = document.createElement('button');
@@ -319,15 +330,8 @@ async function send() {
   const openai = `https://chatgpt.com/?prompt=` + encodeURIComponent(prompt);
   const google = `https://www.google.com/search?udm=50&aep=1&aic=0&hl=${lang}&q=` + encodeURIComponent(prompt);
 
-  terminalPrint(`
-    <div class="line success">> TRACE COMPLETE</div>
-    <div class="line">INPUT: <span class="soft">${url}</span></div>
-    <div class="line">NEXT STEP: OPEN REPORT GENERATOR</div>
-    <br>
-    <div class="line">[1] <a target="_blank" rel="noopener noreferrer" href="${openai}">CHATGPT REPORT</a></div>
-    <div class="line">[2] <a target="_blank" rel="noopener noreferrer" href="${google}">GEMINI REPORT</a></div>
-    <br>
-    <div class="line muted">AUTO-REDIRECT TO REPORT WILL START IN 2 SECONDS...</div>
+  terminalPrint(`> ${url}
+    <div class="line soft">[1] <a target="_blank" rel="noopener noreferrer" href="${openai}">CHATGPT REPORT</a></div> <div class="line soft">[2] <a target="_blank" rel="noopener noreferrer" href="${google}">GEMINI REPORT</a></div>
   `);
 
   document.querySelectorAll('button').forEach(button => { button.disabled = false; });
@@ -339,7 +343,7 @@ async function send() {
   setStatus('READY');
 
   setTimeout(function() {
-    window.location.href = google;
+    ///window.location.href = google;
   }, 2000);
 }
 
