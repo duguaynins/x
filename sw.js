@@ -12,6 +12,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+});
+/*
+self.addEventListener('fetch', event => {
   console.log('Service Worker fetch');
   event.respondWith(
     fetch(event.request) // 直接走網路
@@ -19,7 +22,6 @@ self.addEventListener('fetch', event => {
   );
 });
 
-/*
 self.addEventListener('push', event => {
 });  ///20260307
 
