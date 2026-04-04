@@ -329,10 +329,12 @@ async function send() {
   const prompt = `notice=${bynins}!\n---\nlang=${lang}.\ntask=${task}.\nneed=${need}.\nsumbit=${risk}.\nalarm=${hint}.\n---\ninput=${url}.\n---\nrdap=${refer_in}.\n---\nhtml=${msg}.\n---\nnotice=${bynins}!`;
   const openai = `https://chatgpt.com/?prompt=` + encodeURIComponent(prompt);
   const google = `https://www.google.com/search?udm=50&aep=1&aic=0&hl=${lang}&q=` + encodeURIComponent(prompt);
+  const perple = `https://www.perplexity.ai/?q=` + encodeURIComponent(prompt);   ///xmsg or prompt
 
   terminalPrint(`> ${url}
     <span class="line soft">[ F3 ] <a target="_blank" rel="noopener noreferrer" href="${openai}">CHATGPT REPORT</a></span> 
     <span class="line soft">[ F3 ] <a target="_blank" rel="noopener noreferrer" href="${google}">GEMINI REPORT</a></span>
+    <span class="line soft">[ F3 ] <a target="_blank" rel="noopener noreferrer" href="${perple}">PERPLEXITY REPORT</a></span>
   `);
 
   document.querySelectorAll('button').forEach(button => { button.disabled = false; });
