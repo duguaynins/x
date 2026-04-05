@@ -304,7 +304,7 @@
 
     <div class="hint">
       <input type="file" id="upload" class="hidden-input" accept=".json" style="display: none;" />
-      <label for="upload">INPUT JSON</label>
+      <label for="upload">JSON?</label>
     </div>
     
     <div class="search-wrap dos-block">
@@ -365,7 +365,7 @@
   <script>
     let appsData = null;
 
-    /*
+    
     const fileInput = document.getElementById('upload');
     ///const app = document.getElementById('app');
 
@@ -395,7 +395,11 @@
       };
 
       reader.readAsText(file);
-    });  */
+      renderApps(appsData);
+    });  
+
+
+    /*
     fetch("https://docs.google.com/spreadsheets/d/1eTzw4q4SYcNkU1MjHw6ld5qxU2Ct3EY0ZnjqaVgLnW8/export?format=csv&gid=0")
       .then(res => res.text())
       .then(csvText => {
@@ -409,7 +413,6 @@
         console.log(data);
         appsData = data;
       });
-    /*
     fetch("https://docs.google.com/spreadsheets/d/<SHEET_ID>/export?format=xlsx&gid=0")
       .then(res => res.arrayBuffer())
       .then(buf => {
@@ -426,6 +429,154 @@
 
 
     // 資料部分保持不變
+    
+    // 資料部分保持不變
+    appsData = [
+      {
+        title: "Notice",
+        description: "By using any of the services, it means you have agreed to any content and all content!",
+        repo: null,
+        url: "",
+        category: "notice",
+        priority: 9,
+        badge: []
+      },
+      {
+        title: "nins/+ZIP",
+        description: "Create ZIP archives directly in your terminal browser.",
+        repo: null,
+        url: "https://x.nins.cc/doZIP",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/-ZIP",
+        description: "Extract ZIP files with DOS-friendly naming conventions.",
+        repo: null,
+        url: "https://x.nins.cc/deZIP",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/rezoom",
+        description: "HE!HE!HE!",
+        repo: null,
+        url: "https://x.nins.cc/rezoom",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/deurl",
+        description: "HE!HE!HE!",
+        repo: null,
+        url: "https://x.nins.cc/deurl",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/url2file",
+        description: "HE!HE!HE!",
+        repo: null,
+        url: "https://x.nins.cc/url2file",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/excel2json",
+        description: "HE!HE!HE!",
+        repo: null,
+        url: "https://x.nins.cc/excel2json",
+        category: "main",
+        priority: 8,
+        badge: ["BETA"]
+      },
+      {
+        title: "nins/forms",
+        description: "We’d love any brief feedback! We are helping to make sure all kindness is shared.",
+        repo: "google.forms",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?",
+        category: "feedback",
+        priority: 2,
+        badge: ["FORM"]
+      },
+      {
+        title: "nins/cospeaking",
+        description: "Romanized spelling for all languages.",
+        repo: "cospeaking",
+        url: "https://cospeaking.nins.cc",
+        category: "language",
+        priority: 1,
+        badge: ["STAR", "BETA"]
+      },
+      {
+        title: "nins/encoding",
+        description: "Enter content and get barcode.",
+        repo: "encoding",
+        url: "https://encoding.nins.cc",
+        category: "tools",
+        priority: 1,
+        badge: ["HOT", "BETA"]
+      },
+      {
+        title: "nins/decoding",
+        description: "Use the camera to decode a 2D code.",
+        repo: "decoding",
+        url: "https://decoding.nins.cc",
+        category: "tools",
+        priority: 1,
+        badge: ["HOT", "BETA"]
+      },
+      {
+        title: "nins/uris",
+        description: "Quickly create your own contact URL in HTTPS.",
+        repo: "uris",
+        url: "https://uris.nins.cc",
+        category: "top",
+        priority: 3,
+        badge: ["STAR"]
+      },
+      {
+        title: "nins/deurl",
+        description: "Check a link’s destination first, and don’t walk straight into trouble.",
+        repo: "deurl",
+        url: "https://deurl.nins.cc",
+        category: "top",
+        priority: 3,
+        badge: ["STAR", "SAFE"]
+      },
+      {
+        title: "nins/transing",
+        description: "Use chat channels to easily start communicating with anyone.",
+        repo: "transing",
+        url: "https://transing.nins.cc",
+        category: "top",
+        priority: 2,
+        badge: ["HOT", "STAR"]
+      },
+      {
+        title: "nins/follow",
+        description: "Interested in our latest app releases? We will send you a push notification.",
+        repo: null,
+        url: "custom-follow",
+        category: "info",
+        priority: 1,
+        badge: ["PUSH"]
+      },
+      {
+        title: "admins",
+        description: "Public co-founder.",
+        repo: null,
+        url: "https://sites.google.com/view/duguaynins/",
+        category: "info",
+        priority: 0,
+        badge: ["INFO"]
+      }
+    ];
 
     // =========================================================
     // OPEN FUNCTIONS
@@ -594,13 +745,14 @@
       const query = e.target.value.trim().toLowerCase();
 
       const filtered = appsData.filter(app => {
+        const badges = normalizeArray(app.badge);
         return (
           (app.title || "").toLowerCase().includes(query) ||
           (app.description || "").toLowerCase().includes(query) ||
           (app.category || "").toLowerCase().includes(query) ||
           (app.url || "").toLowerCase().includes(query) ||
           (app.repo || "").toLowerCase().includes(query) ||
-          (app.badge || []).join(" ").toLowerCase().includes(query)
+          (badges || []).join(" ").toLowerCase().includes(query)
         );
       });
 
