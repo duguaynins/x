@@ -271,6 +271,9 @@
     ///const params = new URLSearchParams(window.location.search);
     ///const id = params.get('id');     // "123"
     document.getElementById("webpush").value = JSON.stringify( Cookies.get("webpush") );
+    if (!Cookies.get("webpush")) {  }
+    else {  }
+    
 
     const form = document.getElementById("dosForm");
     const output = document.getElementById("output");
@@ -278,6 +281,7 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { return; }
+      if (!Cookies.get("webpush")) { return; }
 
       ///const name = document.getElementById("name").value.trim();  ///  NAME    : ${name}
       const email = document.getElementById("email").value.trim();
@@ -286,13 +290,14 @@
       const webpush = document.getElementById("webpush").value.trim();
 
       clearInterval(waiting);
-      output.textContent =
+      const data =
 `[DATA START]
   EMAIL   : ${email}
   EMAILTO : ${emailto}
   TEXT    : ${text}
   WEBPUSH : ${webpush}
 [DATA END]\n`;
+      output.textContent = data;
       ///output.textContent += `\n[DATA RECEIVED]`;
 
       ///form.querySelector('button[type="submit"]').disabled = true;
