@@ -297,6 +297,8 @@
 
       ///form.querySelector('button[type="submit"]').disabled = true;
       ///form.querySelector('button[type="reset"]').disabled = true;
+      pushAdmin();  ///20260405
+
     });
 
     form.addEventListener("reset", function () {
@@ -318,6 +320,30 @@
       }, 500);
     }
 
+    
+
+  
+    async function pushAdmin(members=null, title="nins/copyright", body="nins!!!", admin=null) {
+      // 以下為新增測試
+      if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
+      console.log(admin);
+      const payload = `{
+      "data": {
+          "title": "${title}",
+          "body": "${body}"
+      },
+      "subscription": [${JSON.stringify([ admin ])}]
+      }`;
+      
+      console.log(payload);
+      const inputs = { "inputs": payload };
+      const outputs = await HuggingFaces({
+          group: "duguaynins",
+          space: "RedirectAPI",
+          path: "webpush/ninscc",  ///embeddings/meta
+          payload: inputs,
+      }); 
+    }
   </script>
 </body>
 </html>
