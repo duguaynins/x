@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REZOOM.SYS - Google Sheets Exporter</title>
+<style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-fg-dim: #4dbd74;
+      --dos-invert-bg: #00ff66;
+      --dos-invert-fg: #000000;
+      --dos-border: #00ff66;
+      --dos-warning: #ffffff;
+      --dos-warning-bg: #111111;
+      /* 新增：統一的閃爍變數 */
+      --crt-flicker: flicker 0.15s infinite;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    @keyframes flicker {
+      0%   { opacity: 0.97; }
+      5%   { opacity: 0.99; }
+      10%  { opacity: 0.98; }
+      100% { opacity: 0.99; }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      text-shadow: 0 0 4px currentColor;
+      min-height: 100%;
+    }
+
+    /* 掃描線特效 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 9999;
+      opacity: 0.18;
+    }
+
+    /* 統一區塊組件 */
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 10px;
+      margin-bottom: 12px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--dos-border);
+      background: rgba(0, 255, 102, 0.02);
+      /* 加入閃爍動畫 */
+      animation: var(--crt-flicker);
+    }
+      
+    .line-label { font-weight: bold; color: #66ff99; margin-bottom: 8px; display: block; }
+    input[type="text"] {
+      width: 100%;
+      max-width: 500px;
+      padding: 8px;
+      background: rgba(0,255,102,0.1);
+      color: #00ff66;
+      border: 1px solid #00ff66;
+      font-family: "Courier New", monospace;
+    }
+    .btn {
+      background: transparent;
+      color: #00ff66;
+      border: 1px solid #00ff66;
+      padding: 8px 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .btn:hover { background: #00ff66; color: black; }
+    a.download-link { display: block; margin: 4px 0; color: #00ff66; text-decoration: none; }
+    a.download-link:hover { text-decoration: underline; color: #66ff99; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="dos-block">
+    <span class="line-label">C:\> PASTE_GOOGLE_SHEETS_URL</span>
+    <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/d/…">
+    <button class="btn" id="generateBtn">[ F2 ] GENERATE LINKS</button>
+  </div>
+
+  <div class="dos-block" id="outputArea" style="display:none;">
+    <span class="line-label">C:\> DOWNLOAD LINKS</span>
+    <div id="links"></div>
+  </div>
+</div>
+
+<script>
+  const generateBtn = document.getElementById("generateBtn");
+  const sheetUrl = document.getElementById("sheetUrl");
+  const outputArea = document.getElementById("outputArea");
+  const linksDiv = document.getElementById("links");
+
+  function extractSheetId(url) {
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    return match ? match[1] : null;
+  }
+
+  generateBtn.addEventListener("click", () => {
+    const url = sheetUrl.value.trim();
+    const sheetId = extractSheetId(url);
+
+    linksDiv.innerHTML = "";
+
+    if (!sheetId) {
+      linksDiv.textContent = "ERROR: INVALID URL";
+      outputArea.style.display = "block";
+      return;
+    }
+
+    const formats = [
+      { label: "Excel (.xlsx)", ext: "xlsx" },
+      { label: "PDF (.pdf)", ext: "pdf" },
+      { label: "CSV (.csv)", ext: "csv" },
+      { label: "TSV (.tsv)", ext: "tsv" },
+      { label: "OpenDocument (.ods)", ext: "ods" }
+    ];
+
+    formats.forEach(f => {
+      const link = document.createElement("a");
+      link.href = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=${f.ext}`;
+      link.target = "_blank";
+      link.textContent = `[DOWNLOAD] ${f.label}`;
+      link.className = "download-link";
+      linksDiv.appendChild(link);
+    });
+
+    outputArea.style.display = "block";
+  });
+</script>
+</body>
+</html>
