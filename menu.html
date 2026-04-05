@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
+  <link rel="canonical" href="https://copyright.nins.cc/" />
+  <title>nins / menu.sys</title>
+
+
+  <!--link rel="stylesheet" href="https://x.nins.cc/style.css"!-->
+  <style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-fg-dim: #4dbd74;
+      --dos-invert-bg: #00ff66;
+      --dos-invert-fg: #000000;
+      --dos-border: #00ff66;
+      --dos-warning: #ffffff;
+      --dos-warning-bg: #111111;
+      /* 新增：統一的閃爍變數 */
+      --crt-flicker: flicker 0.15s infinite;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    @keyframes flicker {
+      0%   { opacity: 0.97; }
+      5%   { opacity: 0.99; }
+      10%  { opacity: 0.98; }
+      100% { opacity: 0.99; }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      text-shadow: 0 0 4px currentColor;
+      min-height: 100%;
+    }
+
+    /* 掃描線特效 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 9999;
+      opacity: 0.18;
+    }
+
+    /* 統一區塊組件 */
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 10px;
+      margin-bottom: 12px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--dos-border);
+      background: rgba(0, 255, 102, 0.02);
+      /* 加入閃爍動畫 */
+      animation: var(--crt-flicker);
+    }
+
+    .topbar {
+      /* 套用 dos-block 邏輯 */
+    }
+
+    .topbar-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: var(--dos-fg-soft);
+      font-size: 0.95rem;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .prompt {
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    #search {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--dos-fg);
+      font: inherit;
+      font-size: 1rem;
+      text-shadow: 0 0 4px currentColor;
+    }
+
+    #search::placeholder {
+      color: var(--dos-fg-dim);
+      opacity: 1;
+    }
+
+    .hint {
+      color: var(--dos-fg-dim);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+
+    .feature-category {
+      margin-bottom: 20px;
+    }
+
+    /* 統一分類標題風格 */
+    .feature-category h3 {
+      margin: 0 0 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--dos-border);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      color: var(--dos-fg);
+      background: rgba(0, 255, 102, 0.1);
+    }
+
+    .feature-item {
+      display: block;
+      padding: 10px;
+      margin-bottom: 6px;
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: none;
+    }
+
+    .feature-item:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      border-color: var(--dos-invert-bg);
+    }
+
+    .feature-item:hover .app-url,
+    .feature-item:hover .app-meta,
+    .feature-item:hover .app-desc,
+    .feature-item:hover .feature-badge-inline {
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    /* Notice 區塊特殊處理 */
+    .feature-item.notice {
+      color: var(--dos-warning);
+      background: var(--dos-warning-bg);
+      border: 1px solid #666;
+      cursor: default;
+      text-shadow: none;
+    }
+
+    .feature-item.notice:hover {
+      background: #222;
+      color: #fff;
+      border-color: #999;
+    }
+
+    .feature-item.notice:hover .app-url,
+    .feature-item.notice:hover .app-meta,
+    .feature-item.notice:hover .app-desc,
+    .feature-item.notice:hover .feature-badge-inline {
+      color: #fff;
+    }
+
+    .app-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+
+    .app-title {
+      font-weight: bold;
+      min-width: 180px;
+      white-space: nowrap;
+    }
+
+    .app-meta {
+      color: var(--dos-fg-soft);
+    }
+
+    .app-url {
+      color: #33ffaa;
+      word-break: break-all;
+    }
+
+    .app-desc {
+      margin-top: 4px;
+      color: var(--dos-fg-soft);
+      font-size: 0.95rem;
+      padding-left: 18px;
+      line-height: 1.4;
+    }
+
+    .feature-badge-inline {
+      color: #000;
+      background: var(--dos-fg);
+      padding: 1px 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-shadow: none;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-top: 6px;
+    }
+
+    .footer-links a {
+      color: var(--dos-fg);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--dos-fg);
+    }
+
+    .footer-links a:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    .quick-search {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-btn {
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      padding: 6px 12px;
+      font: inherit;
+      cursor: pointer;
+      text-shadow: 0 0 4px currentColor;
+      transition: none;
+    }
+
+    .quick-btn:hover,
+    .quick-btn.active {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    @media (max-width: 768px) {
+      .app-title { min-width: 100%; }
+      .app-desc { padding-left: 0; }
+      .topbar-line { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar dos-block">
+      <div class="topbar-line">
+        <div class="brand" translate="no">© nins. / MENU.SYS</div>
+        <div class="subtitle">Choose the foods you need.</div>
+      </div>
+    </div>
+
+    <div class="hint">
+      <input type="file" id="upload" class="hidden-input" accept=".json" style="display: none;" />
+      <label for="upload">INPUT JSON</label>
+    </div>
+    
+    <div class="search-wrap dos-block">
+      <div class="prompt">SEARCH&gt;</div>
+      <!--input type="text" id="search" placeholder="app / category / url / keyword" /!-->
+      <input type="text" id="search" placeholder="" />
+    </div>
+
+    <div class="quick-search dos-block" id="quickSearch">
+      <button type="button" class="quick-btn" data-keyword="">[ALL]</button>
+      <button type="button" class="quick-btn" data-keyword="main">[MAIN]</button>
+      <button type="button" class="quick-btn" data-keyword="tools">[TOOLS]</button>
+      <button type="button" class="quick-btn" data-keyword="language">[LANGUAGE]</button>
+      <button type="button" class="quick-btn" data-keyword="feedback">[FEEDBACK]</button>
+      <button type="button" class="quick-btn" data-keyword="info">[INFO]</button>
+      <button type="button" class="quick-btn" data-keyword="beta">[BETA]</button>
+      <button type="button" class="quick-btn" data-keyword="star">[STAR]</button>
+      <button type="button" class="quick-btn" data-keyword="hot">[HOT]</button>
+      <button type="button" class="quick-btn" data-keyword="safe">[SAFE]</button>
+      <button type="button" class="quick-btn" data-keyword="url">[URL]</button>
+      <button type="button" class="quick-btn" data-keyword="qr">[QR]</button>
+    </div>
+
+    <div class="hint">
+      <p>Search supports: title, description, category, url...</p>
+      <!--p>TYPE COMMAND TO FILTER_</p!-->
+    </div>
+
+    <div class="feature-grid" id="featureGrid"></div>
+
+    <div class="bottombar dos-block">
+      <div>© 2024 NINS (by JPGT).</div>
+      <div class="footer-links">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSct8PaArwmkAv10Eh5CEybu_88IoSj9V_QOLy07KiL6efu10g/viewform?" target="_blank" rel="noopener noreferrer">nins/forms</a>
+        <a href="https://sites.google.com/view/duguaynins/" target="_blank" rel="noopener noreferrer">admins</a>
+      </div>
+    </div>
+
+  </div>
+    
+  <!--script>
+    fetch('./data.json')
+      .then(res => res.json())
+      .then(appsData => {
+        console.log(appsData);
+
+        appsData.forEach(app => {
+          console.log(app.title);
+        });
+      })
+      .catch(err => {
+        console.error('讀取 JSON 失敗:', err);
+      });
+  </script!-->
+
+  
+
+  <script>
+    let appsData = null;
+
+    /*
+    const fileInput = document.getElementById('upload');
+    ///const app = document.getElementById('app');
+
+    fileInput.addEventListener('change', function (event) {
+      const file = event.target.files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        try {
+          appsData = JSON.parse(e.target.result);
+
+          console.log('讀取成功:', appsData);
+
+          ///app.innerHTML = '';
+
+          appsData.forEach(item => {
+            ///app.innerHTML += `<div>${item.title}</div>`;
+          });
+
+        } catch (error) {
+          console.error('JSON 格式錯誤:', error);
+          ///app.innerHTML = '<p style="color:red;">JSON 格式錯誤</p>';
+        }
+      };
+
+      reader.readAsText(file);
+    });  */
+    fetch("https://docs.google.com/spreadsheets/d/1eTzw4q4SYcNkU1MjHw6ld5qxU2Ct3EY0ZnjqaVgLnW8/export?format=csv&gid=0")
+      .then(res => res.text())
+      .then(csvText => {
+        const rows = csvText.split("\n").map(r => r.split(","));
+        const headers = rows.shift();
+        const data = rows.map(r => {
+          const obj = {};
+          headers.forEach((h,i) => obj[h] = r[i]);
+          return obj;
+        });
+        console.log(data);
+        appsData = data;
+      });
+    /*
+    fetch("https://docs.google.com/spreadsheets/d/<SHEET_ID>/export?format=xlsx&gid=0")
+      .then(res => res.arrayBuffer())
+      .then(buf => {
+        const workbook = XLSX.read(buf, { type: "array" });
+        const firstSheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[firstSheetName];
+        const data = XLSX.utils.sheet_to_json(sheet);
+        console.log(data);
+      });  */
+    
+    
+    ///import appsData from './apps.json';
+    ///console.log(appsData);
+
+
+    // 資料部分保持不變
+
+    // =========================================================
+    // OPEN FUNCTIONS
+    // =========================================================
+    function openFollow() {
+      try {
+        const href = `https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform`;
+        window.open(href, "_blank", "noopener,noreferrer");
+      } catch (err) {
+        window.open("https://docs.google.com/forms/d/e/1FAIpQLScFvHqSal-_GkrtrUIG7v3dXmk0aubYma2DCnl-aXBPjWW-ng/viewform", "_blank");
+      }
+    }
+
+    function openByApp(app) {
+      if (app.title === "nins/forms") { window.open(app.url, "_blank"); return; }
+      if (app.title === "nins/follow") { openFollow(); return; }
+      if (app.url && app.url.startsWith("http")) { window.open(app.url, "_blank"); }
+      ///if (app.url && app.url.startsWith("http")) { loadPage(app.url);/*window.open(app.url, "_blank");*/ }
+    }
+
+    // =========================================================
+    // RENDER
+    // =========================================================
+    const featureGrid = document.getElementById("featureGrid");
+
+    function normalizeArray(value) {
+      if (Array.isArray(value)) return value;       // 已經是陣列
+      if (value === undefined || value === null) return []; // 沒有 badge
+      return [value];                               // 是字串就包成陣列
+    }
+
+    function createAppRow(app) {
+      const item = document.createElement("div");
+      item.classList.add("feature-item");
+      item.classList.add(app.category || "other");
+
+      if ((app.category || "").toLowerCase() === "notice") {
+        item.classList.add("notice");
+      }
+
+      const line = document.createElement("div");
+      line.classList.add("app-line");
+
+      const title = document.createElement("span");
+      title.classList.add("app-title");
+      title.textContent = `> ${app.title}`;
+
+      const category = document.createElement("span");
+      category.classList.add("app-meta");
+      category.textContent = `[${(app.category || "other").toUpperCase()}]`;
+
+      line.appendChild(title);
+      line.appendChild(category);
+
+      if (app.badge) {  /// && app.badge.length
+        const badges = normalizeArray(app.badge);
+        badges.forEach(tag => {
+          const badge = document.createElement("span");
+          badge.classList.add("feature-badge-inline");
+          badge.textContent = `[${tag}]`;
+          badge.setAttribute("translate", "no");
+          line.appendChild(badge);
+        });
+      }
+
+      if (app.url) {
+        const urlSpan = document.createElement("span");
+        urlSpan.classList.add("app-url");
+
+        if (app.url === "custom-follow") {
+          urlSpan.textContent = "https://docs.google.com/forms/.../follow";
+        } else {
+          urlSpan.textContent = app.url;
+        }
+
+        line.appendChild(urlSpan);
+      }
+
+      item.appendChild(line);
+
+      if (app.description) {
+        const desc = document.createElement("div");
+        desc.classList.add("app-desc");
+        desc.textContent = app.description;
+        item.appendChild(desc);
+      }
+
+      const isClickable =
+        app.repo ||
+        app.title === "nins/forms" ||
+        app.title === "nins/follow" ||
+        (app.url && app.url.startsWith("http"));
+
+      if (isClickable && (app.category || "").toLowerCase() !== "notice") {
+        item.addEventListener("click", () => openByApp(app));
+      } else {
+        item.style.cursor = "default";
+      }
+
+      return item;
+    }
+
+    function renderApps(data) {
+      featureGrid.innerHTML = "";
+
+      if (!data.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "NO MATCH FOUND. Try app name, category, url, or keyword.";
+        featureGrid.appendChild(empty);
+        return;
+      }
+
+      const sorted = [...data].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+
+      const categories = {};
+      sorted.forEach(app => {
+        const cat = app.category || "other";
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(app);
+      });
+
+      const categoryOrder = ["notice", "main", "tools", "language", "feedback", "info", "other"];
+
+      Object.keys(categories)
+        .sort((a, b) => {
+          const ia = categoryOrder.indexOf(a);
+          const ib = categoryOrder.indexOf(b);
+          return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+        })
+        .forEach(cat => {
+          const section = document.createElement("div");
+          section.classList.add("feature-category");
+
+          const title = document.createElement("h3");
+          title.textContent = `[ ${cat.toUpperCase()} ]`;
+          section.appendChild(title);
+
+          categories[cat].forEach(app => {
+            section.appendChild(createAppRow(app));
+          });
+
+          featureGrid.appendChild(section);
+        });
+    }
+
+    // =========================================================
+    // SEARCH
+    // =========================================================
+    const searchInput = document.getElementById("search");  ///NEW***
+    const quickButtons = document.querySelectorAll(".quick-btn");
+
+    quickButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const keyword = btn.dataset.keyword || "";
+        searchInput.value = keyword;
+
+        // 觸發 input 事件，沿用原本搜尋邏輯
+        searchInput.dispatchEvent(new Event("input"));
+
+        ///searchInput.focus();
+      });
+    });  ///NEW***
+
+    document.getElementById("search").addEventListener("input", e => {
+      const query = e.target.value.trim().toLowerCase();
+
+      const filtered = appsData.filter(app => {
+        return (
+          (app.title || "").toLowerCase().includes(query) ||
+          (app.description || "").toLowerCase().includes(query) ||
+          (app.category || "").toLowerCase().includes(query) ||
+          (app.url || "").toLowerCase().includes(query) ||
+          (app.repo || "").toLowerCase().includes(query) ||
+          (app.badge || []).join(" ").toLowerCase().includes(query)
+        );
+      });
+
+      renderApps(filtered);
+    });
+
+    // =========================================================
+    // INIT
+    // =========================================================
+    renderApps(appsData);
+
+    // =========================================================
+    // LOAD
+    // =========================================================
+    async function loadPage(url) {
+      try {
+        const response = await fetch(url);
+        const htmlText = await response.text();
+
+        // 建立一個暫存容器解析 HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+
+        // 假設你只想要 <body> 內的內容
+        const content = doc.body.innerHTML;
+
+        // 放入 SPA 內的容器
+        document.querySelector('.screen').innerHTML = doc.querySelector('.screen').innerHTML;
+
+        // 改變 URL（不 reload）
+        history.pushState({ page: url }, '', '/' + url.split('/').pop());
+      } catch (err) {
+        console.error('載入頁面失敗:', err);
+      }
+    }
+  </script>
+</body>
+</html>
