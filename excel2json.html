@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="© 2024 NINS (by JPGT). EXCEL TO JSON CONVERTER." />
+  <title translate="no">nins / excel2json.sys</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-fg-dim: #4dbd74;
+      --dos-invert-bg: #00ff66;
+      --dos-invert-fg: #000000;
+      --dos-border: #00ff66;
+      --crt-flicker: flicker 0.15s infinite;
+    }
+
+    * { box-sizing: border-box; }
+
+    @keyframes flicker {
+      0%   { opacity: 0.97; }
+      5%   { opacity: 0.99; }
+      10%  { opacity: 0.98; }
+      100% { opacity: 0.99; }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      text-shadow: 0 0 4px currentColor;
+      min-height: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 9999;
+      opacity: 0.18;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--dos-border);
+      background: rgba(0, 255, 102, 0.02);
+      animation: var(--crt-flicker);
+    }
+
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 15px;
+      margin-bottom: 15px;
+      background: rgba(0, 255, 102, 0.03);
+    }
+
+    .topbar {
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-bottom: 2px solid var(--dos-border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    .line-label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--dos-fg-soft);
+    }
+
+    .btn {
+      background: transparent;
+      color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      padding: 12px 20px;
+      font: inherit;
+      cursor: pointer;
+      text-shadow: 0 0 4px currentColor;
+      display: inline-block;
+      text-align: center;
+      text-decoration: none;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      background: var(--dos-invert-bg);
+      color: var(--dos-invert-fg);
+      text-shadow: none;
+    }
+
+    .filename {
+      color: var(--dos-fg-dim);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    #status {
+      margin-top: 10px;
+      padding: 5px 10px;
+      display: inline-block;
+      border: 1px dashed var(--dos-border);
+    }
+
+    .blink::after {
+      content: "_";
+      animation: blink-anim 1s step-start infinite;
+    }
+    @keyframes blink-anim { 50% { opacity: 0; } }
+
+    /* JSON 預覽區 */
+    #jsonPreview {
+      width: 100%;
+      height: 400px;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--dos-fg-soft);
+      border: 1px solid var(--dos-border);
+      padding: 10px;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      overflow: auto;
+      white-space: pre;
+      margin-top: 15px;
+    }
+
+    .hidden-input { display: none; }
+
+    @media (max-width: 600px) {
+      .btn { width: 100%; margin-right: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar dos-block">
+      <div>
+        <span style="font-weight: bold;">© NINS / EXCEL2JSON.SYS [2026.04.05]</span><br>
+        <span style="color: var(--dos-fg-soft);">CONVERT SPREADSHEET TO DATA OBJECT</span>
+      </div>
+    </div>
+    
+    <div class="dos-block">
+      <div class="line-label">C:\> SELECT EXCEL SOURCE (.XLSX, .XLS)</div>
+      <button class="btn" id="selectBtn">[ F1 ] SELECT FILE</button>
+      <input type="file" id="upload" class="hidden-input" accept=".xlsx, .xls" />
+      <div class="filename" id="filename">STATUS: NO_FILE_LOADED</div>
+    </div>
+
+    <div class="dos-block">
+      <div class="line-label">C:\> EXECUTE_PARSING_SEQUENCE</div>
+      <button class="btn" id="convertBtn">[ F2 ] RUN_CONVERSION</button>
+      <div id="status" class="blink">SYSTEM_READY</div>
+    </div>
+
+    <div class="dos-block" id="outputArea" style="display:none;">
+      <div class="line-label">C:\> OUTPUT_CHANNELS</div>
+      <div id="downloads"></div>
+      <div id="jsonPreview"></div>
+    </div>
+  </div>
+
+  <script>
+    const upload = document.getElementById("upload");
+    const selectBtn = document.getElementById("selectBtn");
+    const convertBtn = document.getElementById("convertBtn");
+    const jsonPreview = document.getElementById("jsonPreview");
+    const downloads = document.getElementById("downloads");
+    const status = document.getElementById("status");
+    const filename = document.getElementById("filename");
+    const outputArea = document.getElementById("outputArea");
+
+    let excelFile = null;
+
+    selectBtn.addEventListener("click", () => upload.click());
+
+    upload.addEventListener("change", (e) => {
+      excelFile = e.target.files[0];
+      jsonPreview.textContent = "";
+      downloads.innerHTML = "";
+      outputArea.style.display = "none";
+      if (excelFile) {
+        filename.textContent = `FILE: ${excelFile.name.toUpperCase()}`;
+        status.textContent = `FILE_LOADED_OK`;
+      }
+    });
+
+    convertBtn.addEventListener("click", () => {
+      if (!excelFile) {
+        status.textContent = "ERROR: NO_INPUT_FILE";
+        return;
+      }
+
+      status.textContent = "PARSING_DATA...";
+      outputArea.style.display = "block";
+      
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          
+          // 取得第一個工作表
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          
+          // 轉換為 JSON
+          const jsonResult = XLSX.utils.sheet_to_json(worksheet);
+          const jsonString = JSON.stringify(jsonResult, null, 4);
+
+          // 顯示預覽
+          jsonPreview.textContent = jsonString;
+
+          // 建立下載按鈕
+          downloads.innerHTML = "";
+          const blob = new Blob([jsonString], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.className = "btn";
+          link.download = `nins_data_${Date.now()}.json`;
+          link.textContent = `[ F3 ] DOWNLOAD_JSON_FILE`;
+          downloads.appendChild(link);
+
+          status.textContent = `PARSE_COMPLETE`;
+        } catch (err) {
+          status.textContent = "ERROR: INVALID_FILE_FORMAT";
+          console.error(err);
+        }
+      };
+
+      reader.readAsArrayBuffer(excelFile);
+    });
+  </script>
+</body>
+</html>
