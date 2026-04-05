@@ -306,7 +306,7 @@
 
     <div class="topbar dos-block">
       <div class="topbar-line">
-        <div class="brand">© nins. / INDEX.SYS</div>
+        <div class="brand" translate="no">© nins. / INDEX.SYS</div>
         <div class="subtitle">Choose the abilities you need.</div>
       </div>
     </div>
@@ -532,6 +532,7 @@
           const badge = document.createElement("span");
           badge.classList.add("feature-badge-inline");
           badge.textContent = `[${tag}]`;
+          badge.setAttribute("translate", "no");
           line.appendChild(badge);
         });
       }
