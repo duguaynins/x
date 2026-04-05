@@ -75,6 +75,7 @@
       background: rgba(0, 255, 102, 0.03);
     }
 
+    .topbar-line { flex-direction: column; align-items: flex-start; }
     .topbar {
       font-weight: bold;
       letter-spacing: 1px;
@@ -177,13 +178,26 @@
       .text-input { max-width: 100%; }
       .btn { width: 100%; margin-right: 0; }
     }
+    
+
+
+    .brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      color: var(--dos-fg-soft);
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
   <div class="screen">
     <div class="topbar dos-block">
-      <span>© NINS / DEURL.SYS [2026.04.04]</span>
-      <span class="soft">ZERO-TRUST INSPECTOR</span>
+      <div class="topbar-line">
+        <span class="brand">© NINS / REZOOM.SYS [2026.04.04]</span>
+        <span class="subtitle">CHANGE PIXEL SIZE</span>
+      </div>
     </div>
     
     <div class="dos-block">
