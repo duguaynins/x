@@ -241,6 +241,16 @@
       </div>
 
       <div class="line">
+        <label for="emailto">EMAILTO></label>
+        <input type="text" id="emailto" />
+      </div>
+
+      <div class="line">
+        <label for="text">TEXT></label>
+        <input type="text" id="text" />
+      </div>
+
+      <div class="line">
         <label for="webpush">WEBPUSH></label>
         <input type="text" id="webpush" required disabled />
       </div>
@@ -271,6 +281,8 @@
 
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
+      const emailto = document.getElementById("emailto").value.trim();
+      const text = document.getElementById("text").value.trim();
       const webpush = document.getElementById("webpush").value.trim();
 
       clearInterval(waiting);
@@ -278,6 +290,8 @@
 `[DATA START]
   NAME    : ${name}
   EMAIL   : ${email}
+  EMAILTO : ${emailto}
+  TEXT    : ${text}
   WEBPUSH : ${webpush}
 [DATA END]\n`;
       ///output.textContent += `\n[DATA RECEIVED]`;
