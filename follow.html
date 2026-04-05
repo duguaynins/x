@@ -260,7 +260,7 @@
   <script>
     ///const params = new URLSearchParams(window.location.search);
     ///const id = params.get('id');     // "123"
-    document.getElementById("webpush").value = Cookies.get("webpush");
+    document.getElementById("webpush").value = JSON.stringify( Cookies.get("webpush") );
 
     const form = document.getElementById("dosForm");
     const output = document.getElementById("output");
