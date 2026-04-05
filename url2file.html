@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REZOOM.SYS - Google Sheets Exporter</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
+<link rel="canonical" href="https://copyright.nins.cc/" />
+<title>nins / TOFILES.SYS</title>
 <style>
     :root {
       --dos-bg: #000000;
@@ -102,12 +104,39 @@
     .btn:hover { background: #00ff66; color: black; }
     a.download-link { display: block; margin: 4px 0; color: #00ff66; text-decoration: none; }
     a.download-link:hover { text-decoration: underline; color: #66ff99; }
+
+    
+    .topbar-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: var(--dos-fg-soft);
+      font-size: 0.95rem;
+    }
 </style>
 </head>
 <body>
 <div class="screen">
+
+  <div class="topbar dos-block">
+    <div class="topbar-line">
+      <div class="brand" translate="no">© nins. / TOFILES.SYS</div>
+      <div class="subtitle">Google Sheets Exporter.</div>
+    </div>
+  </div>
+
   <div class="dos-block">
-    <span class="line-label">C:\> PASTE_GOOGLE_SHEETS_URL</span>
+    <span class="line-label">C:\> PASTE_GOOGLE SHEETS URL</span>
     <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/d/…">
     <button class="btn" id="generateBtn">[ F2 ] GENERATE LINKS</button>
   </div>
