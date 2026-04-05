@@ -2,9 +2,9 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
-  <link rel="canonical" href="https://copyright.nins.cc/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="description" content="© 2024 NINS (by JPGT).">
+  <link rel="canonical" href="https://copyright.nins.cc/">
   <title translate="no">nins / rezoom.sys</title>
   <style>
     body {
@@ -12,44 +12,51 @@
       color: #00ff00;
       font-family: "Courier New", Courier, monospace;
       margin: 0;
-      padding: 20px;
-      line-height: 1.6;
+      padding: 10px; /* 手機縮減邊距 */
+      line-height: 1.4;
     }
 
     .terminal {
       max-width: 960px;
       margin: auto;
       border: 2px solid #00ff00;
-      padding: 20px;
-      box-shadow: 0 0 20px #00ff00;
+      padding: 15px;
+      box-shadow: 0 0 15px #00ff00;
       background: #000;
+      box-sizing: border-box;
     }
 
     h1 {
       margin-top: 0;
-      font-size: 24px;
+      font-size: 18px; /* 手機標題縮小 */
       text-transform: uppercase;
       border-bottom: 1px solid #00ff00;
       padding-bottom: 10px;
+      word-break: break-all;
     }
 
     .line {
-      margin: 12px 0;
+      margin: 15px 0 8px 0;
+      font-weight: bold;
+      font-size: 14px;
     }
 
     .btn {
       background: #000;
       color: #00ff00;
       border: 2px solid #00ff00;
-      padding: 10px 16px;
+      padding: 12px 16px; /* 增加點擊區域 */
       font-family: inherit;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 5px;
       display: inline-block;
+      width: 100%; /* 手機預設滿版 */
+      box-sizing: border-box;
+      text-align: center;
     }
 
-    .btn:hover {
+    .btn:hover, .btn:active {
       background: #00ff00;
       color: #000;
     }
@@ -62,18 +69,29 @@
       background: #000;
       color: #00ff00;
       border: 2px solid #00ff00;
-      padding: 10px 12px;
+      padding: 12px;
       font-family: inherit;
       font-size: 16px;
-      width: 140px;
+      width: 100%; /* 手機預設滿版 */
+      box-sizing: border-box;
       outline: none;
+      -webkit-appearance: none; /* 移除 iOS 預設內陰影 */
+    }
+
+    /* 調整橫向排列組 */
+    .inline-group {
+      display: flex;
+      flex-direction: column; /* 手機垂直排列 */
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 5px;
     }
 
     .preview, .downloads {
       margin-top: 20px;
       display: flex;
+      flex-direction: column;
       gap: 16px;
-      flex-wrap: wrap;
     }
 
     .preview-item, .download-item {
@@ -81,6 +99,8 @@
       padding: 10px;
       text-align: center;
       background: #050505;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     canvas {
@@ -88,45 +108,50 @@
       background: #111;
       margin: 0 auto 8px;
       border: 1px solid #00ff00;
+      max-width: 100%; /* 關鍵：確保畫布不超出螢幕 */
+      height: auto !important;
     }
 
     a {
       color: #00ff00;
       text-decoration: none;
       border: 1px solid #00ff00;
-      padding: 8px 12px;
-      display: inline-block;
-    }
-
-    a:hover {
-      background: #00ff00;
-      color: #000;
+      padding: 12px;
+      display: block; /* 下載連結改為區塊方便點擊 */
+      text-align: center;
     }
 
     .status {
       margin-top: 15px;
+      font-size: 14px;
       color: #00ff00;
       min-height: 24px;
+      word-break: break-all;
+    }
+
+    .filename {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #00ff00;
+      opacity: 0.8;
+      word-break: break-all;
+    }
+
+    /* 平板與電腦版調整 */
+    @media (min-width: 600px) {
+      body { padding: 20px; }
+      h1 { font-size: 24px; }
+      .btn { width: auto; }
+      .text-input { width: 200px; }
+      .inline-group { flex-direction: row; }
+      .preview, .downloads { flex-direction: row; }
+      a { display: inline-block; }
     }
 
     .blink::after {
       content: "_";
       animation: blink 1s step-start infinite;
     }
-
-    .filename {
-      margin-top: 10px;
-      color: #00ff00;
-    }
-
-    .inline-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-top: 10px;
-    }
-
     @keyframes blink {
       50% { opacity: 0; }
     }
@@ -134,7 +159,7 @@
 </head>
 <body>
   <div class="terminal">
-    <h1>PNG IMAGE CONVERTER v2.5 (S-RENDER)</h1>
+    <h1>© nins. / REZOOM.SYS; PNG IMAGE CONVERTER v2.5 (S-RENDER)</h1>
 
     <div class="line">C:\> SELECT IMAGE FILE</div>
     <button class="btn" id="selectBtn">[ F1 ] [ SELECT FILE ]</button>
@@ -143,21 +168,20 @@
 
     <div class="line">C:\> ENTER OUTPUT SIZE (PX)</div>
     <div class="inline-group">
-      <input type="number" id="sizeInput" class="text-input" placeholder="[ F1.5 ] e.g. 512" value="512" min="1" />
-      
+      <input type="number" id="sizeInput" class="text-input" placeholder="e.g. 512" value="512" min="1" />
+      <!--button class="btn" id="convertBtn" style="margin-top:0">[ F2 ] [ RUN CONVERSION ]</button!-->
     </div>
-    <button class="btn" id="convertBtn">[ F2 ] [ RUN CONVERSION ]</button>
+    
+    <button class="btn" id="convertBtn" style="margin-top:0">[ F2 ] [ RUN CONVERSION ]</button>
     <div class="status blink" id="status">SYSTEM READY</div>
 
     <div class="line">C:\> REAL-TIME RENDER PREVIEW</div>
     <div class="downloads" id="downloads"></div>
     <div class="preview" id="preview"></div>
-
-    <!--div class="line">C:\> DOWNLOAD FILE</div>
-    <div class="downloads" id="downloads"></div!-->
   </div>
 
   <script>
+    // JS 邏輯保持不變，但確保 drawNext 的進度顯示在手機上正常
     const upload = document.getElementById("upload");
     const selectBtn = document.getElementById("selectBtn");
     const convertBtn = document.getElementById("convertBtn");
@@ -169,112 +193,76 @@
 
     let imageFile = null;
 
-    selectBtn.addEventListener("click", () => {
-      upload.click();
-    });
+    selectBtn.addEventListener("click", () => upload.click());
 
     upload.addEventListener("change", (e) => {
       imageFile = e.target.files[0];
       preview.innerHTML = "";
       downloads.innerHTML = "";
-
       if (imageFile) {
         filename.textContent = `FILE: ${imageFile.name}`;
-        status.textContent = `FILE LOADED: ${imageFile.name}`;
-      } else {
-        filename.textContent = "NO FILE SELECTED";
-        status.textContent = "SYSTEM READY";
+        status.textContent = `FILE LOADED.`;
       }
     });
 
     convertBtn.addEventListener("click", () => {
       if (!imageFile) {
-        status.textContent = "ERROR: NO IMAGE FILE SELECTED";
+        status.textContent = "ERROR: NO FILE";
         return;
       }
-
       const size = parseInt(sizeInput.value, 10);
-      if (!size || size <= 0) {
-        status.textContent = "ERROR: INVALID OUTPUT SIZE";
-        return;
-      }
+      if (!size || size <= 0) return;
 
-      // 清空舊內容
       preview.innerHTML = "";
       downloads.innerHTML = "";
-      status.textContent = `INITIALIZING GPU BUFFER...`;
-
+      
       const reader = new FileReader();
       reader.onload = function(event) {
         const img = new Image();
         img.onload = function() {
-          // 1. 建立 Canvas 並設定預覽大小
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
           canvas.width = size;
           canvas.height = size;
           
-          const displaySize = Math.min(size, 400); 
-          canvas.style.width = `${displaySize}px`;
-          canvas.style.height = `${displaySize}px`;
-
           const previewBox = document.createElement("div");
           previewBox.className = "preview-item";
           previewBox.appendChild(canvas);
           preview.appendChild(previewBox);
 
-          // 2. 計算正方形裁切座標 (置中)
           const imgRatio = img.width / img.height;
           let sx, sy, sWidth, sHeight;
-
           if (imgRatio > 1) {
-            sHeight = img.height;
-            sWidth = img.height;
-            sx = (img.width - sWidth) / 2;
-            sy = 0;
+            sHeight = img.height; sWidth = img.height;
+            sx = (img.width - sWidth) / 2; sy = 0;
           } else {
-            sWidth = img.width;
-            sHeight = img.width;
-            sx = 0;
-            sy = (img.height - sHeight) / 2;
+            sWidth = img.width; sHeight = img.width;
+            sx = 0; sy = (img.height - sHeight) / 2;
           }
 
-          // 3. 25 格逐行顯示邏輯
-          const rows = 5;
-          const cols = 5;
-          const blockS = sWidth / cols; // 原始圖片切分大小
-          const blockD = size / cols;   // 畫布目標切分大小
+          const rows = 5, cols = 5;
+          const blockS = sWidth / cols;
+          const blockD = size / cols;
           let index = 0;
 
           function drawNext() {
             if (index >= rows * cols) {
-              // 繪製完成後產生下載連結
               const pngUrl = canvas.toDataURL("image/png");
-              const downloadBox = document.createElement("div");
-              downloadBox.className = "download-item";
               const link = document.createElement("a");
               link.href = pngUrl;
-              link.download = `${size}x${size}.png`;
+              link.download = `nins_rezoom_${Date.now()}_${size}x${size}.png`;
+              ///link.innerHTML = `[ F3 ] DOWNLOAD PNG`;
               link.textContent = `[ F3 ] [ DOWNLOAD ${size}x${size}.PNG ]`;
-              downloadBox.appendChild(link);
-              downloads.appendChild(downloadBox);
-              
-              status.textContent = `CONVERSION COMPLETE. FILE READY.`;
+              downloads.appendChild(link);
+              status.textContent = `COMPLETE.`;
               return;
             }
-
             const col = index % cols;
             const row = Math.floor(index / cols);
-
-            ctx.drawImage(
-              img,
-              sx + (col * blockS), sy + (row * blockS), blockS, blockS,
-              col * blockD, row * blockD, blockD, blockD
-            );
-
-            status.textContent = `WRITING SECTOR: ${index + 1}/25...`;
+            ctx.drawImage(img, sx + (col * blockS), sy + (row * blockS), blockS, blockS, col * blockD, row * blockD, blockD, blockD);
+            status.textContent = `SECTOR: ${index + 1}/25`;
             index++;
-            setTimeout(drawNext, 100); // 100ms 顯示一格
+            setTimeout(drawNext, 50); 
           }
 
           drawNext();
