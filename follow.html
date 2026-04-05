@@ -303,7 +303,10 @@
       ///form.querySelector('button[type="submit"]').disabled = true;
       ///form.querySelector('button[type="reset"]').disabled = true;
       pushAdmin();  ///20260405
-
+      const nins = "duguaynins@gmail.com";
+      const subject = email;
+      const body = webpush;
+      window.location.href = `mailto:${nins}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
 
     form.addEventListener("reset", function () {
