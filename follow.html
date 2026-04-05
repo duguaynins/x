@@ -230,10 +230,10 @@
     <!--div class="hint">SYSTEM READY<span class="cursor"></span></div!-->
 
     <form id="dosForm">
-      <div class="line">
+      <!--div class="line">
         <label for="name">NAME></label>
-        <input type="text" id="name" name="name" required />
-      </div>
+        <input type="text" id="name" name="name" />
+      </div!-->
 
       <div class="line">
         <label for="email">EMAIL></label>
@@ -279,7 +279,7 @@
       e.preventDefault();
       if (!form.checkValidity()) { return; }
 
-      const name = document.getElementById("name").value.trim();
+      ///const name = document.getElementById("name").value.trim();  ///  NAME    : ${name}
       const email = document.getElementById("email").value.trim();
       const emailto = document.getElementById("emailto").value.trim();
       const text = document.getElementById("text").value.trim();
@@ -288,7 +288,6 @@
       clearInterval(waiting);
       output.textContent =
 `[DATA START]
-  NAME    : ${name}
   EMAIL   : ${email}
   EMAILTO : ${emailto}
   TEXT    : ${text}
