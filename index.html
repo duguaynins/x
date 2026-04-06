@@ -521,7 +521,7 @@
 
     function openByApp(app) {
       if (app.title === "nins/forms") { window.open(app.url, "_blank"); return; }
-      if (app.title === "nins/follow") { openFollow(); return; }
+      ///if (app.title === "nins/follow") { openFollow(); return; }
       if (app.url && app.url.startsWith("http")) { window.open(app.url, "_blank"); }
       ///if (app.url && app.url.startsWith("http")) { loadPage(app.url);/*window.open(app.url, "_blank");*/ }
     }
