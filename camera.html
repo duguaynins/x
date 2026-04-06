@@ -1,0 +1,16 @@
+<input id="cameraInput" type="file" accept="image/*" capture="environment">
+
+<img id="preview" style="max-width:300px; display:block; margin-top:10px;" />
+
+<script>
+  const input = document.getElementById('cameraInput');
+  const preview = document.getElementById('preview');
+
+  input.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    preview.src = imageUrl;
+  });
+</script>
