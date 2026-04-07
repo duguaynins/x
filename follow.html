@@ -288,11 +288,14 @@
       ///const name = document.getElementById("name").value.trim();  ///  NAME    : ${name}
       let email = document.getElementById("email").value.trim();
       let emailto = document.getElementById("emailto").value.trim();
-      const text = document.getElementById("text").value.trim();
-      const webpush = document.getElementById("webpush").value.trim();
+      let text = document.getElementById("text").value.trim();
+      let webpush = document.getElementById("webpush").value.trim();
+      let webpushto = null;
       if (!emailto) { emailto = email; }
 
       clearInterval(waiting);
+      if (window.location.protocol === 'file:') { output.textContent = "[ERROR] NOT FOLLOWING.";return; }
+
       const data =
 `[DATA START]
   EMAIL   : ${email}
@@ -303,33 +306,16 @@
       output.textContent = data;
       ///output.textContent += `\n[DATA RECEIVED]`;
 
-      ///form.querySelector('button[type="submit"]').disabled = true;
-      ///form.querySelector('button[type="reset"]').disabled = true;
+      
       (async () => {
-        const hash = await getHash(emailto);
-        const path = `webpush/${hash}/data.txt`;
-        const url = `https://huggingface.co/datasets/duguaynins/dataset-v20260406/resolve/main/${path}`
-        const response = await getResponse(url);
-        const status = await response.status;
-        const webpushto = await response.text();
-
-        console.log("status:", status);
-        console.log("webpushto:", webpushto);
-
         
-        if (response.status!==200) { 
-          // 接收測試
-          if (window.location.protocol !== 'file:') {
-            pushAdmin();  ///20260405
-          }
-        } else {
-          // 發送測試
-          ///pushAdmin("members", "title", "body", "admin");  ///20260405
-          pushAdmin(null, "nins/copyright", text, webpushto);  ///20260405
-          pushAdmin(null, "nins/copyright", "****", webpush);  ///20260405
-          console.log("webpush:", "ing");
-          
-        }
+        webpush = await getWebpush(email);
+        if (webpush) { pushAdmin(null, "nins/copyright", text, webpush); }
+        if (!webpush) { pushAdmin(); }
+
+
+        webpushto = await getWebpush(emailto);
+        if (webpushto) { pushAdmin(null, "nins/copyright", text, webpushto); }
 
 
         // 填入跳轉
@@ -365,9 +351,9 @@
     
 
   
-    async function pushAdmin(members=null, title="nins/copyright", body="nins!!!", admin=null) {
+    async function pushAdmin(members=null, title="nins/copyright", body="Welcome", admin=null) {
       // 以下為新增測試
-      if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
+      ///if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
       ///if (!admin || typeof admin!=="object") { return; }
 
       ///console.log(admin);
@@ -418,6 +404,21 @@
         }
     }
 
+    async function getWebpush(email) {
+        
+        const hash = await getHash(email);
+        const path = `webpush/${hash}/data.txt`;
+        const url = `https://huggingface.co/datasets/duguaynins/dataset-v20260406/resolve/main/${path}`
+        const response = await getResponse(url);
+        const status = await response.status;
+        const webpush_hash = await response.text();
+
+        console.log("status:", status);
+        console.log("webpush_hash:", webpush_hash);
+
+        ///return status, webpush_hash;
+        return webpush_hash;
+    }
   </script>
 </body>
 </html>
