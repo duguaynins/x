@@ -313,7 +313,7 @@
 
         webpush = await getWebpush(email);
         if (webpush) {   pushAdmin(null, "nins/copyright", text, webpush); }
-        if (!webpush) {  pushAdmin(null, "nins/copyright", "Welcome", JSON.stringify( Cookies.get("webpush") )); output.textContent = "[ALARM] WILL FOLLOWING."; }
+        if (!webpush) {  pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
         webpushto = await getWebpush(emailto);
