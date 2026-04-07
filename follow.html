@@ -313,8 +313,8 @@
 
         const [codeA, dataA] = await getWebpush(email);
         webpush = dataA;
-        if (codeA===200) { pushAdmin(null, "nins/copyright", text, Cookies.get("webpush")); }  ///webpush
-        else { pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
+        if (codeA===200) { pushAdmin(null, "nins/copyright", text, Cookies.get("webpush"), email); }  ///webpush
+        else { pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush"), email); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
         const [codeb, dataB] = await getWebpush(emailto);
