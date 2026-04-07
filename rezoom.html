@@ -38,7 +38,6 @@
       min-height: 100%;
     }
 
-    /* 掃描線特效 */
     body::before {
       content: "";
       position: fixed;
@@ -76,11 +75,10 @@
     }
 
     .topbar-line {
-      /* flex-direction: column; align-items: flex-start; */
-      display: flex;          /* 啟用 Flexbox 佈局 */
-      flex-wrap: wrap;        /* 空間不足時允許換行 */
-      justify-content: space-between; /* 關鍵：將子元素平均分配，首尾貼齊邊框 */
-      align-items: center;    /* 垂直置中對齊 */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
     }
     .topbar {
       font-weight: bold;
@@ -92,15 +90,6 @@
       font-size: 0.85rem;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      letter-spacing: 1px;
-      border-bottom: 1px solid var(--dos-border);
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-    }
-
     .line-label {
       font-weight: bold;
       margin-bottom: 8px;
@@ -108,7 +97,6 @@
       color: var(--dos-fg-soft);
     }
 
-    /* 按鈕樣式優化 */
     .btn {
       background: transparent;
       color: var(--dos-fg);
@@ -162,7 +150,6 @@
     }
     @keyframes blink-anim { 50% { opacity: 0; } }
 
-    /* 預覽區域 */
     .preview-grid {
       display: flex;
       flex-wrap: wrap;
@@ -185,8 +172,6 @@
       .btn { width: 100%; margin-right: 0; }
     }
     
-
-
     .brand {
       font-weight: bold;
       letter-spacing: 1px;
@@ -201,13 +186,12 @@
   <div class="screen">
     <div class="topbar dos-block">
       <div class="topbar-line">
-        <span class="brand">© NINS / REZOOM.SYS [2026.04.04]</span>
-        <span class="subtitle">CHANGE PIXEL SIZE</span>
+        <span class="brand">© NINS / REZOOM.SYS [2026.04.07]</span>
+        <span class="subtitle">ADAPTIVE ASPECT RATIO</span>
       </div>
     </div>
     
     <div class="dos-block">
-      <!--h1>© nins. / REZOOM.SYS (PNG S-RENDER v2.5)</h1!-->
       <div class="line-label">C:\> SELECT IMAGE SOURCE</div>
       <button class="btn" id="selectBtn">[ F1 ] SELECT FILE</button>
       <input type="file" id="upload" class="hidden-input" accept="image/*" />
@@ -215,7 +199,7 @@
     </div>
 
     <div class="dos-block">
-      <div class="line-label">C:\> CONFIG_RENDER_SIZE (PX)</div>
+      <div class="line-label">C:\> CONFIG_SHORT_SIDE_SIZE (PX)</div>
       <input type="number" id="sizeInput" class="text-input" value="512" min="1" />
       <button class="btn" id="convertBtn">[ F2 ] RUN_CONVERSION</button>
       <div id="status" class="blink">SYSTEM_READY</div>
@@ -226,11 +210,6 @@
       <div id="downloads"></div>
       <div class="preview-grid" id="preview"></div>
     </div>
-
-    <!--div class="dos-block">
-      <a href="/" class="btn" style="border-style: dotted;">[ ESC ] RETURN_TO_INDEX</a>
-    </div!-->
-
   </div>
 
   <script>
@@ -264,8 +243,8 @@
         status.textContent = "ERROR: NO_INPUT_FILE";
         return;
       }
-      const size = parseInt(sizeInput.value, 10);
-      if (!size || size <= 0) return;
+      const shortSideTarget = parseInt(sizeInput.value, 10);
+      if (!shortSideTarget || shortSideTarget <= 0) return;
 
       preview.innerHTML = "";
       downloads.innerHTML = "";
@@ -277,24 +256,31 @@
         img.onload = function() {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = size;
-          canvas.height = size;
-          
-          preview.appendChild(canvas);
 
-          const imgRatio = img.width / img.height;
-          let sx, sy, sWidth, sHeight;
-          if (imgRatio > 1) {
-            sHeight = img.height; sWidth = img.height;
-            sx = (img.width - sWidth) / 2; sy = 0;
+          let targetW, targetH;
+          const ratio = img.width / img.height;
+
+          // 判斷哪一邊是短邊並計算目標尺寸
+          if (img.width < img.height) {
+            // 寬度是短邊
+            targetW = shortSideTarget;
+            targetH = Math.round(shortSideTarget / ratio);
           } else {
-            sWidth = img.width; sHeight = img.width;
-            sx = 0; sy = (img.height - sHeight) / 2;
+            // 高度是短邊（或正方形）
+            targetH = shortSideTarget;
+            targetW = Math.round(shortSideTarget * ratio);
           }
 
+          canvas.width = targetW;
+          canvas.height = targetH;
+          preview.appendChild(canvas);
+
+          // 分成 5x5 區塊進行渲染（模擬 DOS 載入感）
           const rows = 5, cols = 5;
-          const blockS = sWidth / cols;
-          const blockD = size / cols;
+          const blockSW = img.width / cols;
+          const blockSH = img.height / rows;
+          const blockDW = targetW / cols;
+          const blockDH = targetH / rows;
           let index = 0;
 
           function drawNext() {
@@ -303,18 +289,24 @@
               const link = document.createElement("a");
               link.href = pngUrl;
               link.className = "btn";
-              link.download = `nins_rezoom_${Date.now()}_${size}x${size}.png`;
-              link.textContent = `[ F3 ] DOWNLOAD_${size}X${size}.PNG`;
+              link.download = `nins_rezoom_${Date.now()}_${targetW}x${targetH}.png`;
+              link.textContent = `[ F3 ] DOWNLOAD_${targetW}X${targetH}.PNG`;
               downloads.appendChild(link);
               status.textContent = `RENDER_COMPLETE`;
               return;
             }
             const col = index % cols;
             const row = Math.floor(index / cols);
-            ctx.drawImage(img, sx + (col * blockS), sy + (row * blockS), blockS, blockS, col * blockD, row * blockD, blockD, blockD);
+            
+            ctx.drawImage(
+              img, 
+              col * blockSW, row * blockSH, blockSW, blockSH, // 來源
+              col * blockDW, row * blockDH, blockDW, blockDH  // 目標
+            );
+
             status.textContent = `SECTOR_RENDER: ${index + 1}/25`;
             index++;
-            setTimeout(drawNext, 40); 
+            setTimeout(drawNext, 30); 
           }
 
           drawNext();
