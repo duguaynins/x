@@ -316,17 +316,21 @@
         console.log("status:", status);
         console.log("webpush:", webpush);
 
-        // 接收測試
+        
         if (response.status!==200) { 
+          // 接收測試
           if (window.location.protocol !== 'file:') {
             pushAdmin();  ///20260405
           }
+        } else {
+          // 發送測試
+          ///pushAdmin("members", "title", "body", "admin");  ///20260405
+          pushAdmin(null, null, "***", webpush);  ///20260405
+          pushAdmin();  ///20260405
+          console.log("webpush:", "ing");
+          
         }
 
-        // 發送測試
-        ///pushAdmin("members", "title", "body", "admin");  ///20260405
-        pushAdmin("members", "title", "body", webpush);  ///20260405
-        console.log("webpush:", "ing");
 
         // 填入跳轉
         const nins = "duguaynins@gmail.com";
