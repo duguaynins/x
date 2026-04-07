@@ -310,8 +310,8 @@
       (async () => {
         
         webpush = await getWebpush(email);
-        if (webpush) { pushAdmin(null, "nins/copyright", text, webpush); }
-        if (!webpush) { pushAdmin(); }
+        if (webpush) {   pushAdmin(null, "nins/copyright", text, webpush); }
+        if (!webpush) {  pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
         webpushto = await getWebpush(emailto);
