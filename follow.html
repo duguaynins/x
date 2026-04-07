@@ -271,6 +271,7 @@
     ///const params = new URLSearchParams(window.location.search);
     ///const id = params.get('id');     // "123"
     document.getElementById("webpush").value = JSON.stringify( Cookies.get("webpush") );
+    document.getElementById("email").value = Cookies.get("email");
     if (!Cookies.get("webpush")) {  }
     else {  }
     
@@ -280,21 +281,21 @@
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      clearInterval(waiting);
+      if (window.location.protocol === 'file:') { output.textContent = "[ERROR] NOT FOLLOWING.";return; }
       if (window.location.protocol !== 'file:') {
         if (!form.checkValidity()) { return; }
         if (!Cookies.get("webpush")) { return; }
       }
 
       ///const name = document.getElementById("name").value.trim();  ///  NAME    : ${name}
-      let email = document.getElementById("email").value.trim().toLowerCase();
-      let emailto = document.getElementById("emailto").value.trim().toLowerCase();
+      let email = document.getElementById("email").value.trim();
+      let emailto = document.getElementById("emailto").value.trim();
       let text = document.getElementById("text").value.trim();
       let webpush = document.getElementById("webpush").value.trim();
       let webpushto = null;
       if (!emailto) { emailto = email; }
 
-      clearInterval(waiting);
-      if (window.location.protocol === 'file:') { output.textContent = "[ERROR] NOT FOLLOWING.";return; }
 
       const data =
 `[DATA START]
@@ -308,7 +309,8 @@
 
       
       (async () => {
-        
+        Cookies.set("email", email);
+
         webpush = await getWebpush(email);
         if (webpush) {   pushAdmin(null, "nins/copyright", text, webpush); }
         if (!webpush) {  pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
@@ -321,7 +323,7 @@
         // 填入跳轉
         const nins = "duguaynins@gmail.com";
         const subject = email;
-        const body = JSON.stringify( Cookies.get("webpush") );///webpush;
+        const body = webpush;
         window.location.href = `mailto:${nins}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       
       })();
