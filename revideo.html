@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
+  <link rel="canonical" href="https://copyright.nins.cc/" />
+  <title translate="no">nins / revideo.sys</title>
+  <style>
+    :root {
+      --dos-bg: #000000;
+      --dos-fg: #00ff66;
+      --dos-fg-soft: #66ff99;
+      --dos-border: #00ff66;
+      --crt-flicker: flicker 0.15s infinite;
+    }
+    * { box-sizing: border-box; }
+    @keyframes flicker {
+      0% { opacity: 0.97; } 5% { opacity: 0.99; } 10% { opacity: 0.98; } 100% { opacity: 0.99; }
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--dos-bg);
+      color: var(--dos-fg);
+      font-family: "Courier New", Consolas, monospace;
+      text-shadow: 0 0 4px currentColor;
+      min-height: 100%;
+    }
+    .screen {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 800px;
+      margin: 20px auto; padding: 16px;
+      border: 2px solid var(--dos-border);
+      animation: var(--crt-flicker);
+    }
+    .dos-block {
+      border: 1px solid var(--dos-border);
+      padding: 15px; margin-bottom: 15px;
+      background: rgba(0, 255, 102, 0.02);
+    }
+    .line-label { font-weight: bold; margin-bottom: 8px; color: var(--dos-fg-soft); }
+    .btn {
+      background: transparent; color: var(--dos-fg);
+      border: 1px solid var(--dos-border);
+      padding: 12px 20px; font: inherit; cursor: pointer;
+      display: inline-block; text-decoration: none; margin-right: 10px;
+    }
+    .btn:hover:not(:disabled) { background: var(--dos-fg); color: #000; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .text-input {
+      background: rgba(0, 255, 102, 0.1); color: var(--dos-fg);
+      border: 1px solid var(--dos-border); padding: 10px; width: 100px;
+    }
+    #status { margin-top: 10px; padding: 5px; border: 1px dashed var(--dos-border); display: block; }
+    video { width: 100%; border: 1px solid var(--dos-border); margin-top: 10px; }
+    .hidden { display: none; }
+    progress { width: 100%; height: 20px; accent-color: var(--dos-fg); margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="screen">
+  <div class="dos-block">
+    <div class="line-label">© NINS / REVIDEO.SYS [2026.04.07]</div>
+    <div>ADAPTIVE VIDEO COMPRESSION ENGINE</div>
+  </div>
+
+  <div class="dos-block">
+    <div class="line-label">C:\> SELECT_VIDEO_SOURCE</div>
+    <button class="btn" id="selectBtn">[ F1 ] SELECT MP4/MOV</button>
+    <input type="file" id="upload" class="hidden" accept="video/*">
+    <div id="filename">STATUS: NO_FILE_LOADED</div>
+  </div>
+
+  <div class="dos-block">
+    <div class="line-label">C:\> CONFIG_SHORT_SIDE (PX)</div>
+    <input type="number" id="sizeInput" class="text-input" value="360">
+    <button class="btn" id="convertBtn" disabled>[ F2 ] START_COMPRESSION</button>
+    <progress id="progress" value="0" max="100" class="hidden"></progress>
+    <div id="status">SYSTEM_IDLE</div>
+  </div>
+
+  <div class="dos-block" id="outputArea" class="hidden" style="display:none;">
+    <div class="line-label">C:\> OUTPUT_STREAM</div>
+    <div id="downloadContainer"></div>
+    <video id="outputVideo" controls></video>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+
+<script>
+  const { createFFmpeg, fetchFile } = FFmpeg;
+  const ffmpeg = createFFmpeg({ log: true });
+
+  const upload = document.getElementById("upload");
+  const selectBtn = document.getElementById("selectBtn");
+  const convertBtn = document.getElementById("convertBtn");
+  const sizeInput = document.getElementById("sizeInput");
+  const status = document.getElementById("status");
+  const progress = document.getElementById("progress");
+  const outputArea = document.getElementById("outputArea");
+  const outputVideo = document.getElementById("outputVideo");
+  const downloadContainer = document.getElementById("downloadContainer");
+
+  let videoFile = null;
+
+  selectBtn.onclick = () => upload.click();
+
+  upload.onchange = (e) => {
+    videoFile = e.target.files[0];
+    if (videoFile) {
+      document.getElementById("filename").textContent = `FILE: ${videoFile.name.toUpperCase()}`;
+      convertBtn.disabled = false;
+      status.textContent = "READY_TO_PROCESS";
+    }
+  };
+
+  convertBtn.onclick = async () => {
+    if (!videoFile) return;
+
+    const targetSize = sizeInput.value;
+    status.textContent = "LOADING_FFMPEG_CORE...";
+    convertBtn.disabled = true;
+    progress.classList.remove("hidden");
+
+    if (!ffmpeg.isLoaded()) {
+      await ffmpeg.load();
+    }
+
+    status.textContent = "PROCESSING_VIDEO_LAYERS...";
+    
+    // 讀取檔案到虛擬檔案系統
+    ffmpeg.FS('writeFile', 'input', await fetchFile(videoFile));
+
+    // FFmpeg 濾鏡指令說明：
+    // 1. scale: 依據短邊縮放，長邊自動按比例（-2 代表自動計算且維持偶數，這是 mp4 要求）
+    // 2. drawbox: 畫出綠色邊框 (t=2 是粗度)
+    // 3. drawtext: 畫出時間戳 (置中於底部)
+    const timestamp = new Date().toISOString().replace('Z', '+08:00');
+    
+    // 執行壓縮指令
+    // CRF 28 是平衡畫質與檔案大小的參數，數字越大壓縮越狠
+    await ffmpeg.run(
+      '-i', 'input',
+      '-vf', `scale='if(gt(iw,ih),-2,${targetSize})':'if(gt(iw,ih),${targetSize},-2)',drawbox=t=2:c=0x00FF66@1,drawtext=text='${timestamp}':fontcolor=0x00FF66:fontsize=h/15:x=(w-text_w)/2:y=h-th-10`,
+      '-c:v', 'libx264',
+      '-crf', '28',
+      '-preset', 'veryfast',
+      'output.mp4'
+    );
+
+    status.textContent = "RENDER_COMPLETE";
+    
+    // 從虛擬系統取出結果
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+
+    // 顯示結果
+    outputArea.style.display = "block";
+    outputVideo.src = url;
+    
+    downloadContainer.innerHTML = '';
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `nins_video_${Date.now()}.mp4`;
+    link.className = "btn";
+    link.textContent = `[ F3 ] DOWNLOAD_COMPRESSED.MP4`;
+    downloadContainer.appendChild(link);
+
+    convertBtn.disabled = false;
+    progress.classList.add("hidden");
+  };
+
+  // 監聽進度
+  ffmpeg.setProgress(({ ratio }) => {
+    progress.value = ratio * 100;
+    status.textContent = `ENCODING: ${Math.round(ratio * 100)}%`;
+  });
+</script>
+
+</body>
+</html>
