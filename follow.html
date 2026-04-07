@@ -311,10 +311,10 @@
         const url = `https://huggingface.co/datasets/duguaynins/dataset-v20260406/resolve/main/${path}`
         const response = await getResponse(url);
         const status = await response.status;
-        const webpush = await response.text();
+        const webpushto = await response.text();
 
         console.log("status:", status);
-        console.log("webpush:", webpush);
+        console.log("webpushto:", webpushto);
 
         
         if (response.status!==200) { 
@@ -325,7 +325,7 @@
         } else {
           // 發送測試
           ///pushAdmin("members", "title", "body", "admin");  ///20260405
-          pushAdmin(null, null, "***", webpush);  ///20260405
+          pushAdmin(null, null, "***", webpushto);  ///20260405
           pushAdmin();  ///20260405
           console.log("webpush:", "ing");
           
