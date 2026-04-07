@@ -313,13 +313,14 @@
 
         const [codeA, dataA] = await getWebpush(email);
         webpush = dataA;
-        if (codeA) {   pushAdmin(null, "nins/copyright", text, webpush); }
-        if (!codeA) {  pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
+        if (codeA===200) { pushAdmin(null, "nins/copyright", text, webpush); }
+        else { pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
         const [codeb, dataB] = await getWebpush(emailto);
         webpushto = dataB;
-        if (codeb) { pushAdmin(null, "nins/copyright", text, webpushto); }
+        if (codeb===200) { pushAdmin(null, "nins/copyright", text, webpushto); }
+        else {  }
 
 
         // 填入跳轉
