@@ -286,8 +286,8 @@
       }
 
       ///const name = document.getElementById("name").value.trim();  ///  NAME    : ${name}
-      let email = document.getElementById("email").value.trim();
-      let emailto = document.getElementById("emailto").value.trim();
+      let email = document.getElementById("email").value.trim().toLowerCase();
+      let emailto = document.getElementById("emailto").value.trim().toLowerCase();
       let text = document.getElementById("text").value.trim();
       let webpush = document.getElementById("webpush").value.trim();
       let webpushto = null;
@@ -321,7 +321,7 @@
         // 填入跳轉
         const nins = "duguaynins@gmail.com";
         const subject = email;
-        const body = Cookies.get("webpush");///webpush;
+        const body = JSON.stringify( Cookies.get("webpush") );///webpush;
         window.location.href = `mailto:${nins}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       
       })();
