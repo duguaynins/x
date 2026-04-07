@@ -315,18 +315,20 @@
 
         console.log("status:", status);
         console.log("webpush:", webpush);
-        if (response.status!==200) { return; }  ///無論是否本地都要判斷
 
-        
+        // 接收測試
+        if (response.status!==200) { 
+          if (window.location.protocol !== 'file:') {
+            pushAdmin();  ///20260405
+          }
+        }
+
+        // 發送測試
         ///pushAdmin("members", "title", "body", "admin");  ///20260405
         pushAdmin("members", "title", "body", webpush);  ///20260405
         console.log("webpush:", "ing");
 
-
-        if (window.location.protocol !== 'file:') {
-          pushAdmin();  ///20260405
-        }
-          
+        // 填入跳轉
         const nins = "duguaynins@gmail.com";
         const subject = email;
         const body = webpush;
@@ -361,7 +363,7 @@
   
     async function pushAdmin(members=null, title="nins/copyright", body="nins!!!", admin=null) {
       // 以下為新增測試
-      ///if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
+      if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
       ///if (!admin || typeof admin!=="object") { return; }
 
       ///console.log(admin);
