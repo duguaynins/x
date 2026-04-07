@@ -273,7 +273,7 @@ convertBtn.addEventListener("click", () => {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      // 1. 計算圖片縮放比例
+      // 1. 計算圖片縮放比例***
       let imgW, imgH;
       const ratio = img.width / img.height;
       if (img.width < img.height) {
@@ -315,31 +315,49 @@ convertBtn.addEventListener("click", () => {
 
       function drawNext() {
         if (index >= rows * cols) {
-          // 5. 繪製置中的時間浮水印
           const timestamp = getFormattedTimestamp();
           
+          // 1. 設定目標比例 (例如文字佔圖片寬度的 70%)
+          const targetWidthRatio = 0.7; 
+          const targetPx = imgW * targetWidthRatio;
+
+          // 2. 動態計算字體大小以符合比例
+          // 先用 100px 作為基準測量長度
+          ctx.font = `100px "Courier New", monospace`;
+          const metrics = ctx.measureText(timestamp);
+          const baseWidth = metrics.width;
+          
+          // 根據比例縮放出最終的 fontSize
+          const fontSize = (targetPx / baseWidth) * 100;
+          
+          // 3. 套用計算出的字體大小
           ctx.font = `${fontSize}px "Courier New", monospace`;
-          ctx.textAlign = "center";  // 關鍵：水平置中
+          ctx.textAlign = "center";
           ctx.textBaseline = "bottom";
 
+          // 4. 設定文字位置 (置中，距離底部邊框固定間距)
           const centerX = canvas.width / 2;
+          const textMarginBottom = fontSize * 0.5; // 讓間距隨字體大小縮放，比較美觀
           const posY = canvas.height - strokeWidth - textMarginBottom;
 
-          // 繪製文字陰影 (1px 位移)
+          // 繪製陰影
           ctx.fillStyle = "black";
           ctx.fillText(timestamp, centerX + 1, posY + 1);
           
-          // 繪製 DOS 綠主色文字
+          // 繪製主色
           ctx.fillStyle = "#00ff66";
           ctx.fillText(timestamp, centerX, posY);
           
-          // 產生下載連結
+          // --- 後續下載邏輯 ---
           const pngUrl = canvas.toDataURL("image/png");
+          // ... (其餘代碼不變)
+          
           const link = document.createElement("a");
           link.href = pngUrl;
           link.className = "btn";
-          link.download = `nins_xcamera_${Date.now()}.png`;
-          link.textContent = `[ F3 ] DOWNLOAD_CENTERED.PNG`;
+          link.download = `nins_camera_${Date.now()}.png`;
+          ///link.textContent = `[ F3 ] DOWNLOAD_CENTERED.PNG`;
+          link.textContent = `[ F3 ] DOWNLOAD_${imgW}X${imgH}.PNG`;
           downloads.appendChild(link);
           status.textContent = `RENDER_COMPLETE_CENTERED`;
           return;
