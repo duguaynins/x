@@ -368,10 +368,22 @@ convertBtn.addEventListener("click", () => {
         const col = index % cols;
         const row = Math.floor(index / cols);
         
+        /*
         ctx.drawImage(
           img, 
           col * blockSW, row * blockSH, blockSW, blockSH,
           totalOffset + (col * blockDW), totalOffset + (row * blockDH), blockDW, blockDH
+        ); ##v0 */
+        
+        // 【核心修改】：在繪製目標寬度與高度時各 +1，消除物理縫隙
+        ctx.drawImage(
+          img, 
+          col * blockSW, row * blockSH, 
+          blockSW, blockSH, // 來源裁切不變
+          totalOffset + (col * blockDW), 
+          totalOffset + (row * blockDH), 
+          blockDW + 1, // 目標寬度多給 1px 重疊
+          blockDH + 1  // 目標高度多給 1px 重疊
         );
 
         status.textContent = `SECTOR_RENDER: ${index + 1}/25`;
