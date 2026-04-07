@@ -313,7 +313,7 @@
 
         const [codeA, dataA] = await getWebpush(email);
         webpush = dataA;
-        if (codeA===200) { pushAdmin(null, "nins/copyright", text, webpush); }
+        if (codeA===200) { pushAdmin(null, "nins/copyright", text, Cookies.get("webpush")); }  ///webpush
         else { pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
@@ -356,16 +356,18 @@
     
 
   
-    async function pushAdmin(members=null, title="nins/copyright", body="Welcome", admin=null) {
+    async function pushAdmin(members=null, title="nins/copyright", body="Welcome", admin=null, mail=null) {
       // 以下為新增測試
       ///if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
       ///if (!admin || typeof admin!=="object") { return; }
 
       ///console.log(admin);
+      ///20260407
       const payload = `{
       "data": {
           "title": "${title}",
-          "body": "${body}"
+          "body": "${body}",
+          "mail": "${mail}"
       },
       "subscription": ${JSON.stringify([ admin ])}
       }`;
