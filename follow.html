@@ -280,14 +280,17 @@
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (!form.checkValidity()) { return; }
-      if (!Cookies.get("webpush")) { return; }
+      if (window.location.protocol !== 'file:') {
+        if (!form.checkValidity()) { return; }
+        if (!Cookies.get("webpush")) { return; }
+      }
 
       ///const name = document.getElementById("name").value.trim();  ///  NAME    : ${name}
-      const email = document.getElementById("email").value.trim();
-      const emailto = document.getElementById("emailto").value.trim();
+      let email = document.getElementById("email").value.trim();
+      let emailto = document.getElementById("emailto").value.trim();
       const text = document.getElementById("text").value.trim();
       const webpush = document.getElementById("webpush").value.trim();
+      if (!emailto) { emailto = email; }
 
       clearInterval(waiting);
       const data =
@@ -302,11 +305,36 @@
 
       ///form.querySelector('button[type="submit"]').disabled = true;
       ///form.querySelector('button[type="reset"]').disabled = true;
-      pushAdmin();  ///20260405
-      const nins = "duguaynins@gmail.com";
-      const subject = email;
-      const body = webpush;
-      window.location.href = `mailto:${nins}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      (async () => {
+        const hash = await getHash(emailto);
+        const path = `webpush/${hash}/data.txt`;
+        const url = `https://huggingface.co/datasets/duguaynins/dataset-v20260406/resolve/main/${path}`
+        const response = await getResponse(url);
+        const status = await response.status;
+        const webpush = await response.text();
+
+        console.log("status:", status);
+        console.log("webpush:", webpush);
+        if (response.status!==200) { return; }  ///無論是否本地都要判斷
+
+        
+        ///pushAdmin("members", "title", "body", "admin");  ///20260405
+        pushAdmin("members", "title", "body", webpush);  ///20260405
+        console.log("webpush:", "ing");
+
+
+        if (window.location.protocol !== 'file:') {
+          pushAdmin();  ///20260405
+        }
+          
+        const nins = "duguaynins@gmail.com";
+        const subject = email;
+        const body = webpush;
+        window.location.href = `mailto:${nins}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      })();
+
+
     });
 
     form.addEventListener("reset", function () {
@@ -333,8 +361,10 @@
   
     async function pushAdmin(members=null, title="nins/copyright", body="nins!!!", admin=null) {
       // 以下為新增測試
-      if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
-      console.log(admin);
+      ///if (!admin || typeof admin!=="object") { admin = Cookies.get("webpush"); }
+      ///if (!admin || typeof admin!=="object") { return; }
+
+      ///console.log(admin);
       const payload = `{
       "data": {
           "title": "${title}",
@@ -343,7 +373,7 @@
       "subscription": ${JSON.stringify([ admin ])}
       }`;
       
-      console.log(payload);
+      ///console.log(payload);
       const inputs = { "inputs": payload };
       const outputs = await HuggingFaces({
           group: "duguaynins",
@@ -351,7 +381,37 @@
           path: "webpush/ninscc",  ///embeddings/meta
           payload: inputs,
       }); 
+      console.log(outputs);
     }
+
+    async function getHash(message) {
+        const msgUint8 = new TextEncoder().encode(message); // 轉換為 Uint8Array
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // 進行雜湊
+        const hashArray = Array.from(new Uint8Array(hashBuffer)); // 轉換回 array
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // 轉 16 進位
+        return hashHex;
+    }
+
+    async function getStatus(url) {
+        try {
+            const res = await fetch(url, { method: "HEAD" }); // 等 fetch 完成
+            return res.status; // 直接回傳 HTTP 狀態碼
+        } catch (err) {
+            console.error("網路錯誤:", err);
+            return null; // 無法取得狀態碼時回傳 null
+        }
+    }
+
+    async function getResponse(url) {
+        try {
+            const res = await fetch(url, { method: "GET" }); // 等 fetch 完成
+            return res; // 直接回傳 HTTP 狀態碼
+        } catch (err) {
+            console.error("網路錯誤:", err);
+            return null; // 無法取得狀態碼時回傳 null
+        }
+    }
+
   </script>
 </body>
 </html>
