@@ -288,7 +288,7 @@ convertBtn.addEventListener("click", () => {
       const strokeWidth = 2;       // 固定邊框寬度  ///1
       const padding = 0;           // 圖片緊貼邊框
       const fontSize = 16;         // 固定字體大小
-      const textMarginBottom = 1; // 文字距離底部邊框的間距  ///15
+      const textMarginBottom = 0; // 文字距離底部邊框的間距  ///15  ///1
       const totalOffset = strokeWidth + padding;
 
       // 設定畫布總尺寸
@@ -337,7 +337,7 @@ convertBtn.addEventListener("click", () => {
 
           // 4. 設定文字位置 (置中，距離底部邊框固定間距)
           const centerX = canvas.width / 2;
-          const textMarginBottom = fontSize * 0.5; // 讓間距隨字體大小縮放，比較美觀
+          ///const textMarginBottom = fontSize * 0.5; // 讓間距隨字體大小縮放，比較美觀
           const posY = canvas.height - strokeWidth - textMarginBottom;
 
           // 繪製陰影
