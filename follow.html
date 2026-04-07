@@ -311,13 +311,15 @@
       (async () => {
         Cookies.set("email", email);
 
-        webpush = await getWebpush(email);
-        if (webpush) {   pushAdmin(null, "nins/copyright", text, webpush); }
-        if (!webpush) {  pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
+        const [codeA, dataA] = await getWebpush(email);
+        webpush = dataA;
+        if (codeA) {   pushAdmin(null, "nins/copyright", text, webpush); }
+        if (!codeA) {  pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush")); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
-        webpushto = await getWebpush(emailto);
-        if (webpushto) { pushAdmin(null, "nins/copyright", text, webpushto); }
+        const [codeb, dataB] = await getWebpush(emailto);
+        webpushto = dataB;
+        if (codeb) { pushAdmin(null, "nins/copyright", text, webpushto); }
 
 
         // 填入跳轉
@@ -418,8 +420,8 @@
         console.log("status:", status);
         console.log("webpush_hash:", webpush_hash);
 
-        ///return status, webpush_hash;
-        return webpush_hash;
+        return status, webpush_hash;
+        ///return webpush_hash;
     }
   </script>
 </body>
