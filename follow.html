@@ -321,7 +321,7 @@
         // 填入跳轉
         const nins = "duguaynins@gmail.com";
         const subject = email;
-        const body = webpush;
+        const body = Cookies.get("webpush");///webpush;
         window.location.href = `mailto:${nins}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       
       })();
