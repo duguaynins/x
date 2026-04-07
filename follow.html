@@ -314,7 +314,7 @@
         const [codeA, dataA] = await getWebpush(email);
         webpush = dataA;
         if (codeA>=200 && codeA<300) { pushAdmin(null, "nins/copyright", text, Cookies.get("webpush"), email); }  ///webpush
-        else { pushAdmin(null, "nins/copyright", "Welcome", Cookies.get("webpush"), email); output.textContent = "[ALARM] WILL FOLLOWING."; }
+        else { pushAdmin(null, "nins/copyright", email, Cookies.get("webpush"), email); output.textContent = "[ALARM] WILL FOLLOWING."; }
 
 
         const [codeB, dataB] = await getWebpush(emailto);
