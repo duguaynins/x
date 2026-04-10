@@ -282,7 +282,7 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       clearInterval(waiting);
-      if (window.location.protocol === 'file:') { output.textContent = "[ERROR] NOT FOLLOWING.";return; }
+      ///if (window.location.protocol === 'file:') { output.textContent = "[ERROR] NOT HTTPS.";return; }
       if (window.location.protocol !== 'file:') {
         if (!form.checkValidity()) { return; }
         if (!Cookies.get("webpush")) { return; }
@@ -376,7 +376,7 @@
       const inputs = { "inputs": payload };
       const outputs = await HuggingFaces({
           group: "duguaynins",
-          space: "RedirectAPI",
+          space: "Server",
           path: "webpush/ninscc",  ///embeddings/meta
           payload: inputs,
       }); 
