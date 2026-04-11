@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head translate="yes">
@@ -208,6 +209,11 @@
   </style>
 </head>
 <body>
+  
+<!-- NINS ================================================== -->
+<!--script src="https://copyright.nins.cc/children/0001/nins-update.js"></script!-->
+<script src="https://copyright.nins.cc/children/0001/nins-cookie.js"></script>
+<script src="https://copyright.nins.cc/children/0001/nins-huggingface.js"></script>
 
 <div class="screen">
   <div class="topbar dos-block">
@@ -311,10 +317,10 @@ async function HuggingFaceAPI(inputs=null) {
 
 async function deurl(params) {
   const { url } = params;
-  if (!url) { document.getElementById("input_msg").value = "https://2025.deurl.nins.cc/"; return "???"; }
-  const outputs = await HuggingFaceAPI({
+  if (!url) { document.getElementById("input_msg").value = "https://nins.cc/"; return "???"; }
+  const outputs = await HuggingFaceAPI({  ///HuggingFaces
     group: "duguaynins",
-    space: "RedirectAPI",
+    space: "Server",
     path: "decode/url",
     payload: { inputs: url },
   });
@@ -357,7 +363,7 @@ async function send() {
   const risk = "https://safebrowsing.google.com/safebrowsing/report_phish/";
   const hint = "Users are advised to avoid using any unknown links";
 
-  const prompt = `notice=${bynins}!\n---\nlang=${lang}.\ntask=${task}.\nneed=${need}.\nsumbit=${risk}.\nalarm=${hint}.\n---\ninput=${url}.\n---\nrdap=${refer_in}.\n---\nhtml=${msg}.\n---\nnotice=${bynins}!`;
+  const prompt = `notice=${bynins}!\n---\nlang=${lang}.\ntask=${task}.\nneed=${need}.\nsumbit=${risk}.\nalarm=${hint}.\n---\ninput=${url}.\n---\nrdap=${JSON.stringify(refer_in)}.\n---\nhtml=${JSON.stringify(msg)}.\n---\nnotice=${bynins}!`;
   const openai = `https://chatgpt.com/?prompt=` + encodeURIComponent(prompt);
   const google = `https://www.google.com/search?udm=50&aep=1&aic=0&hl=${lang}&q=` + encodeURIComponent(prompt);
   const perple = `https://www.perplexity.ai/?q=` + encodeURIComponent(prompt);   ///xmsg or prompt
