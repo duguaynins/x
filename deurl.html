@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head translate="yes">
@@ -422,6 +423,28 @@ setInterval(() => {
 
 <script src="https://copyright.nins.cc/children/0001/jsQR.min.js"></script>
 <script>
+
+document.getElementById('input_qr').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    document.getElementById('content').innerHTML = "正在深度解析圖片...";
+
+    const html5QrCode = new Html5Qrcode("canvas_qr"); // 雖然叫 canvas_qr 但它能處理檔案
+
+    html5QrCode.scanFile(file, true)
+        .then(decodedText => {
+            terminalPrint(`> SCAN COMPLETE\n> QR CODE FOUND\n> PAYLOAD: <span class="soft">${code.data}</span>`);
+            document.getElementById('input_msg').value = code.data;
+            send();
+        })
+        .catch(err => {
+            terminalPrint(`<div class="danger">ERROR: NO VALID QR / BARCODE DETECTED.</div><div class="line">TRY A CLEARER IMAGE.</div>`);
+            document.getElementById('input_msg').value = "***";
+            setStatus('SCAN ERROR');
+        });
+});
+/*
 document.getElementById('input_qr').addEventListener('change', function(e) {
   const canvas = document.getElementById('canvas_qr');
   const ctx = canvas.getContext('2d');
@@ -453,7 +476,7 @@ document.getElementById('input_qr').addEventListener('change', function(e) {
     img.src = event.target.result;
   };
   reader.readAsDataURL(file);
-});
+});*/
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/tldts@7.0.19/dist/index.umd.min.js"></script>
