@@ -437,8 +437,9 @@ document.getElementById('input_qr').addEventListener('change', function(e) {
 
     html5QrCode.scanFile(file, true)
         .then(decodedText => {
-            terminalPrint(`> SCAN COMPLETE\n> QR CODE FOUND\n> PAYLOAD: <span class="soft">${code.data}</span>`);
-            document.getElementById('input_msg').value = code.data;
+            ///decodedText = code.data
+            terminalPrint(`> SCAN COMPLETE\n> QR CODE FOUND\n> PAYLOAD: <span class="soft">${decodedText}</span>`);
+            document.getElementById('input_msg').value = decodedText;
             send();
         })
         .catch(err => {
