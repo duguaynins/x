@@ -227,7 +227,8 @@
   <div class="menu dos-block">
     <button type="button" onclick="document.getElementById('input_qr').click();">[ F1 ] IMAGE</button>
     <button type="button" onclick="send()">[ F2 ] ANALYZE</button>
-    <input type="file" id="input_qr" class="hidden" accept="image/*">
+    <!--input type="file" id="input_qr" class="hidden" accept="image/*"!-->
+    <input type="file" id="input_qr" class="hidden" accept="image/*" capture="environment">
     <canvas id="canvas_qr" class="hidden"></canvas>
   </div>
 
@@ -430,7 +431,7 @@ document.getElementById('input_qr').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    document.getElementById('content').innerHTML = "正在深度解析圖片...";
+    document.getElementById('content').innerHTML = "Decoding...";  ///正在深度解析圖片
 
     const html5QrCode = new Html5Qrcode("canvas_qr"); // 雖然叫 canvas_qr 但它能處理檔案
 
