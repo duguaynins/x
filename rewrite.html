@@ -231,7 +231,7 @@
       <input type="text" id="input_msg" class="text-input" placeholder="MESSAGE_TO_AI..."><br>
       <div id="source" contenteditable="true" class="text-input editor"></div><br>
       <div id="target" contenteditable="true" class="text-input editor"></div><br>
-      <div id="Intermediate" contenteditable="true" class="text-input editor"></div><br>
+      <div id="intermediate" contenteditable="true" class="text-input editor"></div><br>
       <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] EXECUTE_SEND</button>
       <div id="google_translate_element" style="display: none;"></div><br>
       <select id="languages">
@@ -377,6 +377,7 @@ const strings = `{
 ///const retextV2 = rewrite({ "system": strings, "user": "銀行", "models": "gpt-4o" });
 
 async function send() {
+  const intermediate = "en";
   const target = document.getElementById("languages").value;
   const source = navigator.language;
   const strings = `{
@@ -387,7 +388,7 @@ async function send() {
 "en": ___,
 "en_disambiguated": ___,} 
 `;
-  document.getElementById("input_msg").disabled = true;
+  ///document.getElementById("input_msg").disabled = true;  ///20260427
   const sys = document.getElementById("input_sys").value;
   const usr = document.getElementById("input_msg").value;
   ///document.getElementById("input_msg").value = "";
@@ -399,10 +400,15 @@ async function send() {
   
   ///log("🤖　" + await generate({ "sys": sys, "usr": usr, "models": 'gpt-4o-mini' }) );
   ///log("🤖＋" + await generate({ "sys": sys, "usr": usr, "models": 'gpt-4o' }) );
-  log("🤖　" + await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' }) );
+  const gpt_4o_mini = await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' });
+  log("🤖　" + gpt_4o_mini );
+  const data = JSON.parse(gpt_4o_mini);
+  document.getElementById("intermediate").innerText = data[intermediate+"_disambiguated"];  ///field
+  document.getElementById("source").innerText = data[source+"_disambiguated"];
+  document.getElementById("target").innerText = data[target+"_disambiguated"];
 
   ///document.getElementById("input_msg").value = "";  ///20260427
-  document.getElementById("input_msg").disabled = false;
+  ///document.getElementById("input_msg").disabled = false;  ///20260427
 }
 
 
