@@ -521,13 +521,16 @@ const observer = new MutationObserver(() => {
 
     // 停止觀察（避免重複）
     observer.disconnect();
+
+    
     ///init();
     const option = document.createElement("option");
     option.value = "en";
     option.textContent = "English";
     target.insertBefore(option, target.firstChild);
-    ///target.appendChild(option);
+    ///target.appendChild(option);  
 
+    target.value = "en";  ///自動選擇語言
 });
 
 observer.observe(document.body, {
