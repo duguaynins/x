@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
   <link rel="canonical" href="https://copyright.nins.cc/" />
-  <title translate="no">nins / translates.sys</title>
+  <title translate="no">nins / rewrite.sys</title>
 
   <style>
     :root {
@@ -128,6 +128,7 @@
       outline: none;
       width: 100%;
       margin-bottom: 10px;
+      min-height: 50px;
     }
 
     /* 訊息顯示區：全展開設計 [引用自帳本偏好] */
@@ -216,7 +217,7 @@
 
   <div class="screen">
     <div class="topbar">
-      <span>© NINS / COGENERATING.SYS [2026.04.18]</span>
+      <span>© NINS / REWRITE.SYS [2026.04.18]</span>
       <span>NODE: DUGUAYNINS</span>
     </div>
     
@@ -228,11 +229,6 @@
 
     <div class="dos-block">
       <div class="line-label">C:\> TERMINAL_INPUT</div>
-      <input type="text" id="input_msg" class="text-input" placeholder="MESSAGE_TO_AI..."><br>
-      <div id="source" contenteditable="true" class="text-input editor"></div><br>
-      <div id="target" contenteditable="true" class="text-input editor"></div><br>
-      <div id="intermediate" contenteditable="true" class="text-input editor"></div><br>
-      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] EXECUTE_SEND</button>
       <div id="google_translate_element" style="display: none;"></div><br>
       <select id="languages">
         <option value="en">English</option>
@@ -260,6 +256,13 @@
         <option value="sv">Svenska</option>
         <option value="pl">Polski</option>
       </select>
+      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] EXECUTE_SEND</button>
+
+      <input type="text" id="input_msg_v0" class="text-input" placeholder="MESSAGE_TO_AI..." style="display: none;"><br>
+      <div id="input_msg" contenteditable="true" class="text-input editor"></div><br>
+      <div id="source" contenteditable="false" class="text-input editor"></div><br>
+      <div id="target" contenteditable="false" class="text-input editor"></div><br>
+      <div id="intermediate" contenteditable="false" class="text-input editor"></div><br>
     </div>
 
     <div class="dos-block">
@@ -376,6 +379,27 @@ const strings = `{
 ///const retextV1 = rewrite({ "system": strings, "user": "銀行", "models": "gpt-4o-mini" });
 ///const retextV2 = rewrite({ "system": strings, "user": "銀行", "models": "gpt-4o" });
 
+// ========================
+// 監聽下拉選單
+// ========================
+document.getElementById("languages").addEventListener("change", function (e) {
+  console.log(e.target.value);
+  const tl_buf = e.target.value;
+  const sl_buf = navigator.language;
+  ///交換語言？
+  init(tl_buf, "");  ///20260428
+});
+
+async function init(tl="", sl="") {
+
+  const intermediate = "en";
+  const target = tl || document.getElementById("languages").value;
+  const source = sl || navigator.language;
+  document.getElementById("intermediate").innerText = "il: "+intermediate;  ///field
+  document.getElementById("source").innerText = "tl: "+target;
+  document.getElementById("target").innerText = "sl: "+source;
+}init();
+
 async function send() {
   const intermediate = "en";
   const target = document.getElementById("languages").value;
@@ -390,7 +414,8 @@ async function send() {
 `;
   ///document.getElementById("input_msg").disabled = true;  ///20260427
   const sys = document.getElementById("input_sys").value;
-  const usr = document.getElementById("input_msg").value;
+  ///const usr = document.getElementById("input_msg").value;
+  const usr = document.getElementById("input_msg").innerText;  ///textContent：純原始文字（效能較好）
   ///document.getElementById("input_msg").value = "";
   log("🧠　" + usr);  ///🧠✨💡
   ///{ "text": xmsg, "source": null, "target": {tl:tlang, il:ilang} }
