@@ -395,7 +395,7 @@ async function init(tl="", sl="") {
   document.getElementById("languages").value = tl;  ///配合初始化的追加
   const intermediate = "en";
   const target = tl || document.getElementById("languages").value;
-  const source = sl || navigator.language;
+  const source = sl || "auto" || navigator.language;
   document.getElementById("intermediate").innerText = "format(il): "+intermediate;  ///field
   document.getElementById("source").innerText = "source(sl): "+source;
   document.getElementById("target").innerText = "target(tl): "+target;
@@ -429,6 +429,7 @@ async function send() {
   const gpt_4o_mini = await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' });
   log("🤖　" + gpt_4o_mini );
   const data = JSON.parse(gpt_4o_mini);
+  downloadJSON(data);
   document.getElementById("intermediate").innerText = data[intermediate+"_disambiguated"];  ///field
   document.getElementById("source").innerText = data[source+"_disambiguated"];
   document.getElementById("target").innerText = data[target+"_disambiguated"];
@@ -449,6 +450,24 @@ document.getElementById("input_msg").addEventListener("keydown", function(e) {
  
 <!-- LOG ================================================== -->
 <script type="text/javascript">  // dialog.js
+function downloadJSON(data){
+  const blob = new Blob(
+    [JSON.stringify(data, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const timestamp = Date.now();
+  console.log(timestamp);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${timestamp}.json`;  ///data.json
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
 </script>
     
 
@@ -461,7 +480,7 @@ function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'en',   // 原始語言
     includedLanguages: '',  ///zh-TW,ja,ko,en,hi,zh-CN
-    ///layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    ///layout: google.translate.TranslateElement.InlineLayout.SIMPLE,  ///註解後就不會自動開始翻譯了讚讚
   }, 'google_translate_element');
 }
 
@@ -487,7 +506,6 @@ const observer = new MutationObserver(() => {
         }));
 
     console.log("語言清單:", languages);
-
     // 塞到你的 select
     const target = document.getElementById("languages");
     if (target) {
@@ -503,6 +521,13 @@ const observer = new MutationObserver(() => {
 
     // 停止觀察（避免重複）
     observer.disconnect();
+    ///init();
+    const option = document.createElement("option");
+    option.value = "en";
+    option.textContent = "English";
+    target.insertBefore(option, target.firstChild);
+    ///target.appendChild(option);
+
 });
 
 observer.observe(document.body, {
