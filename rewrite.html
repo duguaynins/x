@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,7 +110,7 @@
       text-decoration: none;
       margin-right: 10px;
       margin-bottom: 10px;
-      /* width: 100%; /* 手機優先 */
+      width: 100%;
     }
 
     .btn:hover, .btn:active {
@@ -154,8 +155,10 @@
     @keyframes blink-anim { 50% { opacity: 0; } }
 
     @media (min-width: 600px) {
-      .btn { width: auto; }
-      .text-input { max-width: 400px; }
+      /* .btn { width: auto; } */
+      /* .text-input { max-width: 400px; } */
+      .btn { width: 500px; }
+      .text-input { width: 500px; }
     }
   </style>
   <style>
@@ -231,7 +234,7 @@
     <div class="dos-block">
       <div class="line-label">C:\> TERMINAL_INPUT</div>
       <div id="google_translate_element" style="display: none;"></div><br>
-      <select id="languages" class="btn_vt">
+      <select id="languages" class="btn">
         <option value="en">English</option>
         <option value="zh-TW">繁體中文</option>
         <option value="zh-CN">简体中文</option>
@@ -256,11 +259,10 @@
         <option value="nl">Nederlands</option>
         <option value="sv">Svenska</option>
         <option value="pl">Polski</option>
-      </select>
-      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ]</button>
-
-      <input type="text" id="input_msg_v0" class="text-input" placeholder="MESSAGE_TO_AI..." style="display: none;"><br>
+      </select><br>
       <div id="input_msg" contenteditable="true" class="text-input editor"></div><br>
+      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ]</button><br>
+
       <div id="source" contenteditable="false" class="text-input editor"></div><br>
       <div id="target" contenteditable="false" class="text-input editor"></div><br>
       <div id="intermediate" contenteditable="false" class="text-input editor"></div><br>
@@ -392,7 +394,7 @@ document.getElementById("languages").addEventListener("change", function (e) {
 });
 
 async function init(tl="", sl="") {
-  document.getElementById("languages").value = tl;  ///配合初始化的追加
+  ///document.getElementById("languages").value = tl;  ///配合初始化的追加
   const intermediate = "en";
   const target = tl || document.getElementById("languages").value;
   const source = sl || "auto" || navigator.language;
@@ -402,6 +404,7 @@ async function init(tl="", sl="") {
 }init("en", "");  ///配合初始化的追加
 
 async function send() {
+  init();
   const intermediate = "en";
   const target = document.getElementById("languages").value;
   const source = navigator.language;
@@ -463,7 +466,7 @@ function downloadJSON(data){
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${timestamp}.json`;  ///data.json
+  a.download = `nins_rewrite_${timestamp}.json`;  ///data.json
   a.click();
 
   URL.revokeObjectURL(url);
@@ -551,3 +554,4 @@ function setLanguage(lang) {
 
 </body>
 </html>
+
