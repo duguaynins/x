@@ -391,14 +391,14 @@ document.getElementById("languages").addEventListener("change", function (e) {
 });
 
 async function init(tl="", sl="") {
-
+  document.getElementById("languages").value = tl;  ///配合初始化的追加
   const intermediate = "en";
   const target = tl || document.getElementById("languages").value;
   const source = sl || navigator.language;
   document.getElementById("intermediate").innerText = "il: "+intermediate;  ///field
   document.getElementById("source").innerText = "tl: "+target;
   document.getElementById("target").innerText = "sl: "+source;
-}init();
+}init("en", "");  ///配合初始化的追加
 
 async function send() {
   const intermediate = "en";
