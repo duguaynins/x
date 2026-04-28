@@ -231,7 +231,7 @@
     <div class="dos-block">
       <div class="line-label">C:\> TERMINAL_INPUT</div>
       <div id="google_translate_element" style="display: none;"></div><br>
-      <select id="languages">
+      <select id="languages" class="btn_vt">
         <option value="en">English</option>
         <option value="zh-TW">繁體中文</option>
         <option value="zh-CN">简体中文</option>
@@ -448,24 +448,78 @@ document.getElementById("input_msg").addEventListener("keydown", function(e) {
 <!-- 放置你原有的布局 -->
  
 <!-- LOG ================================================== -->
-<script type="text/javascript">  // google.js
+<script type="text/javascript">  // dialog.js
 </script>
-<!-- LOG ================================================== -->
     
 
 <!-- TRANSLATE ================================================== -->
-<script type="text/javascript">
+<script type="text/javascript">  // translate.js
+// ========================
+// 翻譯本體
+// ========================
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'en',   // 原始語言
     includedLanguages: '',  ///zh-TW,ja,ko,en,hi,zh-CN
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    ///layout: google.translate.TranslateElement.InlineLayout.SIMPLE
   }, 'google_translate_element');
 }
+
+// ========================
+// 翻譯監聽
+// ========================
+// 監聽 Google Translate 下拉選單
+const observer = new MutationObserver(() => {
+    const select = document.querySelector(".goog-te-combo");
+
+    if (!select || select.dataset.done) return;
+
+    // 👉 等 option 出現
+    if (select.options.length <= 1) return;
+
+    select.dataset.done = "true";
+
+    const languages = [...select.options]
+        .filter(opt => opt.value)
+        .map(opt => ({
+            value: opt.value,
+            text: opt.textContent.trim()
+        }));
+
+    console.log("語言清單:", languages);
+
+    // 塞到你的 select
+    const target = document.getElementById("languages");
+    if (target) {
+        target.innerHTML = "";
+
+        languages.forEach(lang => {
+            const option = document.createElement("option");
+            option.value = lang.value;
+            option.textContent = lang.text;
+            target.appendChild(option);
+        });
+    }
+
+    // 停止觀察（避免重複）
+    observer.disconnect();
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+function setLanguage(lang) {
+    const select = document.querySelector(".goog-te-combo");
+    if (!select) return;
+
+    select.value = lang;
+    select.dispatchEvent(new Event("change"));
+}
 </script>
-<script type="text/javascript"
-src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
-<!-- TRANSLATE ================================================== -->
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"> </script>
+
+
 </body>
 </html>
