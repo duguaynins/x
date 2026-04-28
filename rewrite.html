@@ -463,7 +463,7 @@ function downloadJSON(data){
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = `nins_rewrite_${timestamp}.json`;  ///data.json
+  a.download = `${timestamp}.json`;  ///data.json
   a.click();
 
   URL.revokeObjectURL(url);
