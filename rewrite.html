@@ -256,7 +256,7 @@
         <option value="sv">Svenska</option>
         <option value="pl">Polski</option>
       </select>
-      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] EXECUTE_SEND</button>
+      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ]</button>
 
       <input type="text" id="input_msg_v0" class="text-input" placeholder="MESSAGE_TO_AI..." style="display: none;"><br>
       <div id="input_msg" contenteditable="true" class="text-input editor"></div><br>
@@ -439,7 +439,7 @@ async function send() {
 
 document.getElementById("input_msg").addEventListener("keydown", function(e) {    
     if (e.key === "Enter") {
-        e.preventDefault();  // 阻止 Enter 鍵的預設行為（即防止跳轉到下一個輸入框）
+        ///e.preventDefault();  // 阻止 Enter 鍵的預設行為（即防止跳轉到下一個輸入框）
         ///send();  ///20260428
     }
 });
