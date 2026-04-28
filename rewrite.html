@@ -165,7 +165,8 @@
       padding: 6px 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      white-space: pre;
+      /* white-space: pre; */
+      white-space: pre-wrap;
       outline: none;
     }
 </style>
@@ -395,9 +396,9 @@ async function init(tl="", sl="") {
   const intermediate = "en";
   const target = tl || document.getElementById("languages").value;
   const source = sl || navigator.language;
-  document.getElementById("intermediate").innerText = "il: "+intermediate;  ///field
-  document.getElementById("source").innerText = "tl: "+target;
-  document.getElementById("target").innerText = "sl: "+source;
+  document.getElementById("intermediate").innerText = "format(il): "+intermediate;  ///field
+  document.getElementById("source").innerText = "source(sl): "+source;
+  document.getElementById("target").innerText = "target(tl): "+target;
 }init("en", "");  ///配合初始化的追加
 
 async function send() {
