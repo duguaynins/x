@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
+  <link rel="canonical" href="https://copyright.nins.cc/" />
+  <title translate="no">nins / readme.sys</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    :root {
+      --ods-bg: #ffffff;
+      --ods-fg: #000000;
+      --ods-fg-soft: #333333;
+      --ods-fg-dim: #666666;
+      --ods-invert-bg: #000000;
+      --ods-invert-fg: #ffffff;
+      --ods-border: #000000;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--ods-bg);
+      color: var(--ods-fg);
+      font-family: "Courier New", Consolas, Monaco, monospace;
+      min-height: 100%;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      border: 2px solid var(--ods-border);
+      background: var(--ods-bg);
+    }
+
+    .dos-block {
+      border: 1px solid var(--ods-border);
+      padding: 15px;
+      margin-bottom: 15px;
+      background: var(--ods-bg);
+    }
+
+    .topbar-line {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar {
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-bottom: 2px solid var(--ods-border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    .line-label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--ods-fg-soft);
+    }
+
+    .btn {
+      background: transparent;
+      color: var(--ods-fg);
+      border: 1px solid var(--ods-border);
+      padding: 12px 20px;
+      font: inherit;
+      cursor: pointer;
+      transition: none;
+      display: inline-block;
+      text-align: center;
+      text-decoration: none;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover, .btn:active {
+      background: var(--ods-invert-bg);
+      color: var(--ods-invert-fg);
+    }
+
+    .text-input {
+      background: var(--ods-bg);
+      color: var(--ods-fg);
+      border: 1px solid var(--ods-border);
+      padding: 10px;
+      font: inherit;
+      outline: none;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 10px;
+    }
+    
+    .short-input {
+      max-width: 300px;
+    }
+
+    .filename {
+      color: var(--ods-fg-dim);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    #status {
+      margin-top: 10px;
+      padding: 5px 10px;
+      display: inline-block;
+      border: 1px dashed var(--ods-border);
+    }
+
+    .blink::after {
+      content: "_";
+      animation: blink-anim 1s step-start infinite;
+    }
+    @keyframes blink-anim { 50% { opacity: 0; } }
+
+    .preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    canvas {
+      border: 1px solid var(--ods-border);
+      max-width: 100%;
+      height: auto !important;
+      background: #ffffff;
+    }
+
+    /* 新增的 TXT 內容顯示區域樣式 */
+    .txt-content-box {
+      width: 100%;
+      margin-top: 20px;
+      border: 1px solid var(--ods-border);
+      padding: 15px;
+      background: #f9f9f9;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-size: 0.95rem;
+    }
+
+    .hidden-input { display: none; }
+
+    @media (max-width: 600px) {
+      .text-input { max-width: 100%; }
+      .btn { width: 100%; margin-right: 0; }
+    }
+    
+    .brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      color: var(--ods-fg-soft);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar dos-block">
+      <div class="topbar-line">
+        <span class="brand">© NINS / README.SYS [2026.04.07]</span>
+        <span class="subtitle">ZIP EXTRACTOR & ADAPTIVE ASPECT RATIO</span>
+      </div>
+    </div>
+    
+    <div class="dos-block">
+      <div class="line-label">C:\> SELECT ZIP SOURCE (URL OR LOCAL FILE)</div>
+      <div style="margin-bottom: 10px;">
+        <input type="text" id="urlInput" class="text-input" placeholder="ENTER ZIP FILE URL HERE..." />
+        <button class="btn" id="fetchUrlBtn" style="margin-bottom:0;">[ F4 ] FETCH_URL_ZIP</button>
+      </div>
+      <div style="margin-top: 5px; margin-bottom: 5px; color: var(--ods-fg-dim);">-- OR --</div>
+      <button class="btn" id="selectBtn">[ F1 ] SELECT LOCAL ZIP</button>
+      <input type="file" id="upload" class="hidden-input" accept=".zip" />
+      <div class="filename" id="filename">STATUS: NO_ZIP_LOADED</div>
+    </div>
+
+    <div class="dos-block">
+      <div class="line-label">C:\> CONFIG_SHORT_SIDE_SIZE (PX)</div>
+      <input type="number" id="sizeInput" class="text-input short-input" value="512" min="1" />
+      <button class="btn" id="convertBtn">[ F2 ] RUN_CONVERSION</button>
+      <div id="status" class="blink">SYSTEM_READY</div>
+    </div>
+
+    <div class="dos-block" id="outputArea" style="display:none;">
+      <div class="line-label">C:\> OUTPUT_CHANNELS</div>
+      <div id="downloads"></div>
+      <div class="preview-grid" id="preview"></div>
+      
+      <div id="txtOutputWrapper" style="display:none; margin-top: 20px;">
+        <div class="line-label" style="margin-bottom: 5px;">[ TXT_FILE_CONTENT ]</div>
+        <div class="txt-content-box" id="txtContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const upload = document.getElementById("upload");
+    const selectBtn = document.getElementById("selectBtn");
+    const urlInput = document.getElementById("urlInput");
+    const fetchUrlBtn = document.getElementById("fetchUrlBtn");
+    const convertBtn = document.getElementById("convertBtn");
+    const sizeInput = document.getElementById("sizeInput");
+    const preview = document.getElementById("preview");
+    const downloads = document.getElementById("downloads");
+    const status = document.getElementById("status");
+    const filename = document.getElementById("filename");
+    const outputArea = document.getElementById("outputArea");
+    const txtOutputWrapper = document.getElementById("txtOutputWrapper");
+    const txtContent = document.getElementById("txtContent");
+
+    let zipBlobData = null; // 儲存獲取到的 ZIP 二進位資料
+
+    // 處理本地檔案選取
+    selectBtn.addEventListener("click", () => upload.click());
+    upload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      resetOutput();
+      if (file) {
+        zipBlobData = file;
+        filename.textContent = `LOCAL_ZIP: ${file.name.toUpperCase()}`;
+        status.textContent = `ZIP_LOADED_OK`;
+      }
+    });
+
+    // 處理遠端 URL 獲取 ZIP
+    fetchUrlBtn.addEventListener("click", async () => {
+      const url = urlInput.value.trim();
+      if (!url) {
+        status.textContent = "ERROR: EMPTY_URL";
+        return;
+      }
+      status.textContent = "FETCHING_ZIP_STREAM...";
+      resetOutput();
+
+      try {
+        // 注意：請求的遠端伺服器必須允許 CORS 跨網域請求，否則瀏覽器會阻擋
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP_${response.status}`);
+        
+        zipBlobData = await response.blob();
+        const urlFileName = url.substring(url.lastIndexOf('/') + 1) || "REMOTE.ZIP";
+        filename.textContent = `REMOTE_ZIP: ${urlFileName.toUpperCase()}`;
+        status.textContent = `ZIP_FETCH_SUCCESS`;
+      } catch (err) {
+        console.error(err);
+        status.textContent = `FETCH_ERROR: ${err.message}`;
+        zipBlobData = null;
+      }
+    });
+
+    function resetOutput() {
+      preview.innerHTML = "";
+      downloads.innerHTML = "";
+      txtContent.textContent = "";
+      txtOutputWrapper.style.display = "none";
+      outputArea.style.display = "none";
+    }
+
+    // 點擊執行轉換（解壓 ZIP -> 讀取內含的 PNG 與 TXT）
+    convertBtn.addEventListener("click", async () => {
+      if (!zipBlobData) {
+        status.textContent = "ERROR: NO_INPUT_ZIP_DATA";
+        return;
+      }
+      const shortSideTarget = parseInt(sizeInput.value, 10);
+      if (!shortSideTarget || shortSideTarget <= 0) return;
+
+      resetOutput();
+      outputArea.style.display = "block";
+      status.textContent = "UNZIPPING_ARCHIVE...";
+
+      try {
+        // 使用 JSZip 載入 ZIP 檔案
+        const zip = await JSZip.loadAsync(zipBlobData);
+        
+        let imgFileInZip = null;
+        let txtFileInZip = null;
+
+        // 尋找壓縮檔內的第一個 png 和第一個 txt 檔案
+        zip.forEach((relativePath, file) => {
+          if (!file.dir) {
+            if (relativePath.toLowerCase().endsWith('.png') && !imgFileInZip) {
+              imgFileInZip = file;
+            }
+            if (relativePath.toLowerCase().endsWith('.txt') && !txtFileInZip) {
+              txtFileInZip = file;
+            }
+          }
+        });
+
+        if (!imgFileInZip) {
+          status.textContent = "ERROR: NO_PNG_FOUND_IN_ZIP";
+          return;
+        }
+
+        // 1. 處理 TXT 檔案內容顯示
+        if (txtFileInZip) {
+          const textData = await txtFileInZip.async("string");
+          txtContent.textContent = textData;
+          txtOutputWrapper.style.display = "block"; // 顯示文字區塊
+        } else {
+          txtContent.textContent = "[ NOTICE: NO_TXT_FILE_FOUND_IN_ZIP ]";
+          txtOutputWrapper.style.display = "block";
+        }
+
+        // 2. 處理 PNG 檔案解壓並轉換
+        status.textContent = "EXTRACTING_IMAGE...";
+        const imgBlob = await imgFileInZip.async("blob");
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            let targetW, targetH;
+            const ratio = img.width / img.height;
+
+            if (img.width < img.height) {
+              targetW = shortSideTarget;
+              targetH = Math.round(shortSideTarget / ratio);
+            } else {
+              targetH = shortSideTarget;
+              targetW = Math.round(shortSideTarget * ratio);
+            }
+
+            canvas.width = targetW;
+            canvas.height = targetH;
+            preview.appendChild(canvas);
+
+            // 5x5 區塊漸進渲染效果
+            const rows = 5, cols = 5;
+            const blockSW = img.width / cols;
+            const blockSH = img.height / rows;
+            const blockDW = targetW / cols;
+            const blockDH = targetH / rows;
+            let index = 0;
+
+            function drawNext() {
+              if (index >= rows * cols) {
+                const pngUrl = canvas.toDataURL("image/png");
+                const link = document.createElement("a");
+                link.href = pngUrl;
+                link.className = "btn";
+                link.download = `nins_rezoom_${Date.now()}_${targetW}x${targetH}.png`;
+                link.textContent = `[ F3 ] DOWNLOAD_${targetW}X${targetH}.PNG`;
+                downloads.appendChild(link);
+                status.textContent = `RENDER_COMPLETE`;
+                return;
+              }
+              const col = index % cols;
+              const row = Math.floor(index / cols);
+              
+              ctx.drawImage(
+                img, 
+                col * blockSW, row * blockSH, blockSW, blockSH, 
+                col * blockDW, row * blockDH, blockDW, blockDH  
+              );
+
+              status.textContent = `SECTOR_RENDER: ${index + 1}/25`;
+              index++;
+              setTimeout(drawNext, 30); 
+            }
+
+            drawNext();
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(imgBlob);
+
+      } catch (err) {
+        console.error(err);
+        status.textContent = `ZIP_ERROR: ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
