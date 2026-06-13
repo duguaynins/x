@@ -228,16 +228,28 @@
 
     let zipBlobData = null; // 儲存獲取到的 ZIP 二進位資料
 
+    window.addEventListener("load", () => {
+      const params = new URLSearchParams(window.location.search);
+      const dataUrl = params.get("data");
+
+      if (dataUrl) {
+        urlInput.value = decodeURIComponent(dataUrl);
+
+        // 自動執行 FETCH_URL_ZIP
+        fetchUrlBtn.click();
+      }
+    });
+
     // 處理本地檔案選取
     selectBtn.addEventListener("click", () => upload.click());
-    upload.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      resetOutput();
-      if (file) {
-        zipBlobData = file;
-        filename.textContent = `LOCAL_ZIP: ${file.name.toUpperCase()}`;
-        status.textContent = `ZIP_LOADED_OK`;
-      }
+      upload.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        resetOutput();
+        if (file) {
+          zipBlobData = file;
+          filename.textContent = `LOCAL_ZIP: ${file.name.toUpperCase()}`;
+          status.textContent = `ZIP_LOADED_OK`;
+        }
     });
 
     // 處理遠端 URL 獲取 ZIP
