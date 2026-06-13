@@ -279,8 +279,9 @@
       txtOutputWrapper.style.display = "none";
       outputArea.style.display = "none";
     }
-    async function readOutput_vOK() {
+    async function readOutput() {
       ///document.getElementById("select-zip").style.display = "none";  ///test
+      encodeOutput();
 
       const url = urlInput.value.trim();
       if (!url) {
@@ -429,7 +430,18 @@
 
     
 
-    async function readOutput() {
+    async function encodeOutput() {
+const params = new URLSearchParams(window.location.search);
+
+const data = params.get('data');
+
+if (data !== null) {
+    ///console.log('找到 data:', data);
+    return;
+} else {
+    ///console.log('沒有 data 參數');
+}
+      
   const url = urlInput.value.trim();
 
   if (!url) {
