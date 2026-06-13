@@ -240,7 +240,7 @@
 
         // 自動執行 FETCH_URL_ZIP
         ///fetchUrlBtn.click();
-        readOutput();
+        ///readOutput();
       }
     });
 
@@ -279,7 +279,7 @@
       txtOutputWrapper.style.display = "none";
       outputArea.style.display = "none";
     }
-    async function readOutput() {
+    async function readOutput_vOK() {
       ///document.getElementById("select-zip").style.display = "none";  ///test
 
       const url = urlInput.value.trim();
@@ -425,6 +425,22 @@
         console.error(err);
         status.textContent = `ZIP_ERROR: ${err.message}`;
       }
+    }
+
+    
+
+    async function readOutput() {
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    status.textContent = "ALARM: EMPTY_URL";
+    return;
+  }
+
+  const encodedUrl = encodeURIComponent(url);
+
+  window.location.href =
+    `https://example.com/?data=${encodedUrl}`;
     }
   </script>
 </body>
