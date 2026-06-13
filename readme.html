@@ -260,6 +260,7 @@
 
     // 處理遠端 URL 獲取 ZIP
     fetchUrlBtn.addEventListener("click", async () => {
+      encodeOutput();
       readOutput();
       ///showOutput();
     });
@@ -281,7 +282,7 @@
     }
     async function readOutput() {
       ///document.getElementById("select-zip").style.display = "none";  ///test
-      encodeOutput();
+      ///encodeOutput();
 
       const url = urlInput.value.trim();
       if (!url) {
