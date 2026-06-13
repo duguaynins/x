@@ -253,21 +253,26 @@
           zipBlobData = file;
           filename.textContent = `LOCAL_ZIP: ${file.name.toUpperCase()}`;
           status.textContent = `ZIP_LOADED_OK`;
-          readOutput();
-          showOutput();
+          ///readOutput();
+          ///showOutput();
         }
     });
 
     // 處理遠端 URL 獲取 ZIP
     fetchUrlBtn.addEventListener("click", async () => {
       readOutput();
+      ///showOutput();
+    });
+
+    // 點擊執行轉換（解壓 ZIP -> 讀取內含的 PNG 與 TXT）
+    convertBtn.addEventListener("click", async () => {
       showOutput();
     });
 
 
     async function resetOutput() {
-      document.getElementById("select-zip").style.display = "none";  ///test
-      document.getElementById("select-px").style.display = "none";  ///test
+      ///document.getElementById("select-zip").style.display = "none";  ///test
+      ///document.getElementById("select-px").style.display = "none";  ///test
       preview.innerHTML = "";
       downloads.innerHTML = "";
       txtContent.textContent = "";
@@ -302,6 +307,8 @@
     }
 
     async function showOutput() { ///params
+      document.getElementById("select-zip").style.display = "none";  ///test
+      document.getElementById("select-px").style.display = "none";  ///test
       
       if (!zipBlobData) {
         status.textContent = "ERROR: NO_INPUT_ZIP_DATA";
@@ -419,11 +426,6 @@
         status.textContent = `ZIP_ERROR: ${err.message}`;
       }
     }
-
-    // 點擊執行轉換（解壓 ZIP -> 讀取內含的 PNG 與 TXT）
-    convertBtn.addEventListener("click", async () => {
-      showOutput();
-    });
   </script>
 </body>
 </html>
