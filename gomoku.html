@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<title>nins / gomoku.sys</title>
+<style>
+  body { margin: 0; overflow: hidden; }
+  #ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.9);
+    font-family: sans-serif;
+    z-index: 10;
+    border-radius: 8px;
+  }
+</style>
+</head>
+
+<body>
+<div id="ui">
+  <div id="info">黑棋先手</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+let scene, camera, renderer;
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
+
+const SIZE = 15;
+const HALF = (SIZE - 1) / 2;
+
+let grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
+let current = 1;
+
+init();
+animate();
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf2f2f2);
+
+  // 🎯 改進：初始化時就納入螢幕寬高比計算，防止一開始變形
+  const aspect = window.innerWidth / window.innerHeight;
+  const view = SIZE / 2;
+
+  camera = new THREE.OrthographicCamera(
+    -view, view,
+    view, -view,
+    0.1, 1000
+  );
+  
+  // 呼叫一次更新相機邊界的邏輯
+  updateCameraAspect(aspect);
+
+  camera.position.set(0, 20, 0);
+  camera.lookAt(0, 0, 0);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  document.body.appendChild(renderer.domElement);
+
+  // 🟫 棋盤
+  const board = new THREE.Mesh(
+    new THREE.PlaneGeometry(SIZE, SIZE),
+    new THREE.MeshStandardMaterial({ color: 0xe2c48a })
+  );
+  board.rotation.x = -Math.PI / 2;
+  scene.add(board);
+
+  // 💡 光
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const light = new THREE.DirectionalLight(0xffffff, 0.8);
+  light.position.set(10, 20, 10);
+  scene.add(light);
+
+  // 📏 網格線（完全對齊）
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x000000 });
+
+  for (let i = 0; i < SIZE; i++) {
+    const p = i - HALF;
+
+    scene.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(p, 0.01, -HALF),
+        new THREE.Vector3(p, 0.01, HALF)
+      ]),
+      lineMat
+    ));
+
+    scene.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-HALF, 0.01, p),
+        new THREE.Vector3(HALF, 0.01, p)
+      ]),
+      lineMat
+    ));
+  }
+
+  window.addEventListener("click", onClick);
+  window.addEventListener("resize", resize);
+
+  updateUI();
+}
+
+function onClick(e) {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  const hit = new THREE.Vector3();
+  raycaster.ray.intersectPlane(plane, hit);
+
+  const x = Math.round(hit.x + HALF);
+  const y = Math.round(hit.z + HALF);
+
+  if (!inBoard(x, y)) return;
+  if (grid[x][y] !== 0) return;
+
+  place(x, y, current);
+
+  if (checkWin(x, y, current)) {
+    document.getElementById("info").innerText =
+      (current === 1 ? "黑棋" : "白棋") + " 勝利 🎉";
+    window.removeEventListener("click", onClick);
+    return;
+  }
+
+  current *= -1;
+  updateUI();
+}
+
+function inBoard(x, y) {
+  return x >= 0 && x < SIZE && y >= 0 && y < SIZE;
+}
+
+function place(x, y, c) {
+  grid[x][y] = c;
+
+  const piece = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.42, 0.42, 0.2, 32),
+    new THREE.MeshStandardMaterial({
+      color: c === 1 ? 0x111111 : 0xffffff
+    })
+  );
+
+  piece.position.set(
+    x - HALF,
+    0.2,
+    y - HALF
+  );
+
+  scene.add(piece);
+}
+
+function checkWin(x, y, c) {
+  const dirs = [
+    [1,0],[0,1],[1,1],[1,-1]
+  ];
+
+  for (let [dx,dy] of dirs) {
+    let count = 1;
+    count += countDir(x,y,dx,dy,c);
+    count += countDir(x,y,-dx,-dy,c);
+    if (count >= 5) return true;
+  }
+  return false;
+}
+
+function countDir(x,y,dx,dy,c){
+  let n=0;
+  let i=x+dx,j=y+dy;
+
+  while(inBoard(i,j) && grid[i][j]===c){
+    n++;
+    i+=dx;
+    j+=dy;
+  }
+  return n;
+}
+
+function updateUI(){
+  document.getElementById("info").innerText =
+    current===1 ? "輪到黑棋 ⚫" : "輪到白棋 ⚪";
+}
+
+// 統一管理相機縮放比例的函式
+function updateCameraAspect(aspect) {
+  const view = SIZE / 2 + 1; // 加 1 可以留點安全邊距，不讓棋盤貼齊邊緣
+
+  if (aspect >= 1) {
+    // 橫螢幕：以高度為基準，縮放寬度
+    camera.left = -view * aspect;
+    camera.right = view * aspect;
+    camera.top = view;
+    camera.bottom = -view;
+  } else {
+    // 直螢幕：以寬度為基準，縮放高度
+    camera.left = -view;
+    camera.right = view;
+    camera.top = view / aspect;
+    camera.bottom = -view / aspect;
+  }
+  camera.updateProjectionMatrix();
+}
+
+function resize(){
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  const aspect = window.innerWidth / window.innerHeight;
+  
+  // 使用正確的防變形邏輯
+  updateCameraAspect(aspect);
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+</script>
+
+</body>
+</html>
