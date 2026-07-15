@@ -301,7 +301,8 @@
             ctx.drawImage(
               img, 
               col * blockSW, row * blockSH, blockSW, blockSH, // 來源
-              col * blockDW, row * blockDH, blockDW, blockDH  // 目標
+              ///col * blockDW, row * blockDH, blockDW, blockDH,  // 目標
+              col * blockDW, row * blockDH, blockDW+1, blockDH+1  // 目標
             );
 
             status.textContent = `SECTOR_RENDER: ${index + 1}/25`;
